@@ -11,9 +11,11 @@ import { MdOutlineForum } from "react-icons/md";
 import { AiOutlineVideoCamera, AiOutlineFileSearch } from "react-icons/ai";
 import { HiAcademicCap } from "react-icons/hi";
 import LogoIcon from "./../assets/logo.png";
+// import { useNavigate } from "react-router-dom";
 const { Sider } = Layout;
 
-const Sidebar = () => {
+const Sidebar = ({ router }) => {
+    const { navigate } = router;
     const menuItems = [
         {
             path: links.PATH_DOCS,
@@ -41,6 +43,11 @@ const Sidebar = () => {
             text: "Kiểm tra",
         },
     ];
+
+    const onRedirect = (path) => {
+        navigate(path);
+    };
+    console.log("router", router);
     return (
         <div className="w-[200px] bg-[#2c3145]">
             <div className="p-2">
@@ -48,11 +55,14 @@ const Sidebar = () => {
             </div>
             {menuItems.map((menuItem, index) => {
                 return (
-                    <div className="flex items-center p-2 cursor-pointer">
-                        <menuItem.icon className="text-md text-[#7d9fb1]" />
-                        <div className="pl-2 text-[#7d9fb1]">
-                            {menuItem.text}
-                        </div>
+                    <div
+                        onClick={() => {
+                            onRedirect(menuItem.path);
+                        }}
+                        className="flex items-center py-4 px-2 cursor-pointer text-[#7d9fb1] hover:bg-[#7d9fb1] hover:text-[#fff]"
+                    >
+                        <menuItem.icon className="text-md" />
+                        <div className="pl-2">{menuItem.text}</div>
                     </div>
                 );
             })}

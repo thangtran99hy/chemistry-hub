@@ -27,9 +27,9 @@ function App() {
         })
     );
     return (
-        <div className="flex">
-            <Sidebar />
-            <div className="flex-1">
+        <div className="flex h-[100vh]">
+            <Sidebar router={router} />
+            <div className="flex-1 p-2 overflow-y-auto">
                 <RouterProvider router={router} />
             </div>
         </div>
