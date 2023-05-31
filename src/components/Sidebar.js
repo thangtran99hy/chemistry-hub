@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Layout, Menu } from "antd";
 import {
     UserOutlined,
@@ -11,11 +11,21 @@ import { MdOutlineForum } from "react-icons/md";
 import { AiOutlineVideoCamera, AiOutlineFileSearch } from "react-icons/ai";
 import { HiAcademicCap } from "react-icons/hi";
 import LogoIcon from "./../assets/logo.png";
-// import { useNavigate } from "react-router-dom";
-const { Sider } = Layout;
+import { useLocation, NavLink } from "react-router-dom";
+import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
+import { AuthContext } from "../providers/AuthProvider";
+import { signOut } from "firebase/auth";
+import { auth } from "./../firebase";
 
-const Sidebar = ({ router }) => {
-    const { navigate } = router;
+const Sidebar = (props) => {
+    const { authUser, isAuthModal, setAuthUser, setIsAuthModal } =
+        useContext(AuthContext);
+    const onSignOut = () => {
+        signOut(auth).then((res) => {
+            setAuthUser(null);
+        });
+    };
+    const location = useLocation();
     const menuItems = [
         {
             path: links.PATH_DOCS,
@@ -44,28 +54,54 @@ const Sidebar = ({ router }) => {
         },
     ];
 
-    const onRedirect = (path) => {
-        navigate(path);
-    };
-    console.log("router", router);
+    console.log("location", location);
     return (
-        <div className="w-[200px] bg-[#2c3145]">
+        <div className="w-[200px] bg-[#2c3145] flex flex-col">
             <div className="p-2">
-                <img src={LogoIcon} />
+                <NavLink to={links.PATH_HOME}>
+                    <img src={LogoIcon} />
+                </NavLink>
             </div>
-            {menuItems.map((menuItem, index) => {
-                return (
-                    <div
-                        onClick={() => {
-                            onRedirect(menuItem.path);
-                        }}
-                        className="flex items-center py-4 px-2 cursor-pointer text-[#7d9fb1] hover:bg-[#7d9fb1] hover:text-[#fff]"
-                    >
-                        <menuItem.icon className="text-md" />
-                        <div className="pl-2">{menuItem.text}</div>
-                    </div>
-                );
-            })}
+            <div className="flex-1">
+                {menuItems.map((menuItem, index) => {
+                    const isActive = location.pathname === menuItem.path;
+                    return (
+                        <NavLink to={menuItem.path}>
+                            <div
+                                className={`flex items-center py-4 px-2 cursor-pointer  ${
+                                    isActive
+                                        ? "text-[#fff] bg-[#7d9fb1]"
+                                        : "text-[#7d9fb1] "
+                                }`}
+                            >
+                                <menuItem.icon className="text-md" />
+                                <div className="pl-2">{menuItem.text}</div>
+                            </div>
+                        </NavLink>
+                    );
+                })}
+            </div>
+            {authUser ? (
+                <div
+                    className="p-2 h-[50px] text-white flex items-center justify-center cursor-pointer"
+                    onClick={() => {
+                        onSignOut();
+                    }}
+                >
+                    <FaSignOutAlt />
+                    <div className="ml-2">Sign Out</div>
+                </div>
+            ) : (
+                <div
+                    className="p-2 h-[50px] text-white flex items-center justify-center cursor-pointer"
+                    onClick={() => {
+                        setIsAuthModal(true);
+                    }}
+                >
+                    <FaSignInAlt />
+                    <div className="ml-2">Sign In</div>
+                </div>
+            )}
         </div>
     );
 };

@@ -8,8 +8,28 @@ import {
 } from "react-router-dom";
 import { mainRoutes } from "./routes";
 import NotFoundPage from "./components/NotFoundPage";
+import LayoutApp from "./components/LayoutApp";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "./providers/AuthProvider";
+import { Modal } from "antd";
+import SignUp from "./modules/auth/components/SignUp";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 
-function App() {
+const App = (props) => {
+    const { authUser, isAuthModal, setAuthUser, setIsAuthModal } =
+        useContext(AuthContext);
+    console.log("authUser", authUser);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setAuthUser(user);
+            } else {
+                setAuthUser(null);
+            }
+        });
+    }, []);
     const router = createBrowserRouter(
         mainRoutes.map((route, index) => {
             const {
@@ -21,19 +41,34 @@ function App() {
             } = route;
             return {
                 path: path,
-                element: <ComponentRoute />,
+                element: (
+                    <LayoutApp>
+                        <ComponentRoute />
+                    </LayoutApp>
+                ),
                 // isExact: isExact,
             };
         })
     );
+    if (authUser === undefined) return <></>;
     return (
-        <div className="flex h-[100vh]">
-            <Sidebar router={router} />
-            <div className="flex-1 p-2 overflow-y-auto">
-                <RouterProvider router={router} />
-            </div>
-        </div>
+        <>
+            <RouterProvider router={router} />
+            {isAuthModal && (
+                <Modal
+                    open={isAuthModal}
+                    onCancel={() => {
+                        setIsAuthModal(false);
+                    }}
+                    onClose={() => {
+                        setIsAuthModal(false);
+                    }}
+                >
+                    <SignUp />
+                </Modal>
+            )}
+        </>
     );
-}
+};
 
 export default App;

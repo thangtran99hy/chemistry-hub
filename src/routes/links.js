@@ -1,3 +1,4 @@
+export const PATH_HOME = "/";
 export const PATH_DOCS = "/docs";
 export const PATH_FORUM = "/forum";
 export const PATH_VIDEO = "/video";

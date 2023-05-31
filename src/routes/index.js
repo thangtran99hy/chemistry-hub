@@ -2,10 +2,16 @@ import NotFoundPage from "../components/NotFoundPage";
 import Docs from "../modules/docs";
 import Formulas from "../modules/formulas";
 import Forum from "../modules/forum";
+import Home from "../modules/home";
 import Test from "../modules/test";
 import Video from "../modules/video";
 import * as links from "./links";
 export const mainRoutes = [
+    {
+        component: Home,
+        path: links.PATH_HOME,
+        isExact: true,
+    },
     {
         component: Docs,
         path: links.PATH_DOCS,
