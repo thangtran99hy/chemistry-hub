@@ -15,11 +15,11 @@ import { Modal } from "antd";
 import SignUp from "./modules/auth/components/SignUp";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
+import Auth from "./modules/auth";
 
 const App = (props) => {
     const { authUser, isAuthModal, setAuthUser, setIsAuthModal } =
         useContext(AuthContext);
-    console.log("authUser", authUser);
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -63,8 +63,9 @@ const App = (props) => {
                     onClose={() => {
                         setIsAuthModal(false);
                     }}
+                    footer={null}
                 >
-                    <SignUp />
+                    <Auth />
                 </Modal>
             )}
         </>

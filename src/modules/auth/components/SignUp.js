@@ -1,37 +1,31 @@
-import React, { useContext, useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./../../../firebase";
-import { AuthContext } from "../../../providers/AuthProvider";
-import { Button, Input } from "antd";
+import React, {useContext, useState} from "react";
+import {createUserWithEmailAndPassword} from "firebase/auth";
+import {auth} from "./../../../firebase";
+import {AuthContext} from "../../../providers/AuthProvider";
+import { Form, Input, Button } from 'antd';
+import {getDatabase, ref, set} from "firebase/database";
+
 const SignUp = (props) => {
-    const { authUser, setAuthUser } = useContext(AuthContext);
+    const { authUser, setAuthUser,isAuthModal,
+        setIsAuthModal, } = useContext(AuthContext);
 
-    const [data, setData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-    });
+    const onFinish = (values) => {
+        const { firstName, lastName, email, password } = values;
 
-    const { firstName, lastName, email, password } = data;
-
-    const onChange = (name, value) => {
-        setData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    const onSubmit = async (e) => {
-        e.preventDefault();
-
-        await createUserWithEmailAndPassword(auth, email, password)
+        createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
-                console.log(user);
-                setAuthUser(user);
-                // ...
+                saveUser({
+                    uid: user.uid,
+                    firstName,
+                    lastName,
+                    email
+                })
+                    .then(res => {
+                        setAuthUser(user);
+                    })
+
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -39,57 +33,65 @@ const SignUp = (props) => {
                 console.log(errorCode, errorMessage);
                 // ..
             });
-    };
+    }
+
+    const saveUser = async (payload) => {
+        const {
+            uid,
+            firstName,
+            lastName,
+            email,
+        } = payload;
+        const db = getDatabase();
+        return await set(ref(db, "users/" + uid), {
+            firstName,
+            lastName,
+            email,
+        });
+    }
     return (
-        <div>
-            <div>
-                <label htmlFor="email-address">First name</label>
-                <Input
-                    type="text"
-                    label="First name"
-                    value={firstName}
-                    onChange={(e) => onChange("firstName", e.target.value)}
-                    required
-                    placeholder="First name"
-                />
-            </div>
-            <div>
-                <label htmlFor="email-address">Last name</label>
-                <Input
-                    type="text"
-                    label="Last name"
-                    value={lastName}
-                    onChange={(e) => onChange("lastName", e.target.value)}
-                    required
-                    placeholder="Last name"
-                />
-            </div>
-            <div>
-                <label htmlFor="email-address">Email address</label>
-                <Input
-                    type="email"
-                    label="Email address"
-                    value={email}
-                    onChange={(e) => onChange("email", e.target.value)}
-                    required
-                    placeholder="Email address"
-                />
-            </div>
+        <Form
+            name="signUpForm"
+            onFinish={onFinish}
+            style={{ maxWidth: '300px', margin: '0 auto' }}
+        >
+            <Form.Item
+                name="firstName"
+                rules={[{ required: true, message: 'Please enter your first name!' }]}
+            >
+                <Input placeholder="First Name" />
+            </Form.Item>
 
-            <div>
-                <label htmlFor="password">Password</label>
-                <Input
-                    type="password"
-                    label="Create password"
-                    value={password}
-                    onChange={(e) => onChange("password", e.target.value)}
-                    required
-                    placeholder="Password"
-                />
-            </div>
+            <Form.Item
+                name="lastName"
+                rules={[{ required: true, message: 'Please enter your last name!' }]}
+            >
+                <Input placeholder="Last Name" />
+            </Form.Item>
 
-            <Button onClick={onSubmit}>Sign up</Button>
-        </div>
+            <Form.Item
+                name="email"
+                rules={[
+                    { required: true, message: 'Please enter your email!' },
+                    { type: 'email', message: 'Please enter a valid email address!' },
+                ]}
+            >
+                <Input placeholder="Email" />
+            </Form.Item>
+
+            <Form.Item
+                name="password"
+                rules={[{ required: true, message: 'Please enter your password!' }]}
+            >
+                <Input.Password placeholder="Password" />
+            </Form.Item>
+
+            <Form.Item>
+                <Button htmlType="submit">
+                    Sign Up
+                </Button>
+            </Form.Item>
+        </Form>
     );
 };
 

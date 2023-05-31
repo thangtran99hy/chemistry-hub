@@ -6,6 +6,7 @@ import Home from "../modules/home";
 import Test from "../modules/test";
 import Video from "../modules/video";
 import * as links from "./links";
+import ForumQuestion from "../modules/forum/ForumQuestion";
 export const mainRoutes = [
     {
         component: Home,
@@ -20,6 +21,11 @@ export const mainRoutes = [
     {
         component: Forum,
         path: links.PATH_FORUM,
+        isExact: true,
+    },
+    {
+        component: ForumQuestion,
+        path: links.PATH_FORUM_QUESTION,
         isExact: true,
     },
     {

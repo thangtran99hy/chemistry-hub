@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {doc, getDoc, getFirestore, collection, query, where, getDocs} from "firebase/firestore";
-import { List } from 'antd';
+import {Button, List} from 'antd';
 import {useNavigate} from "react-router-dom";
+import { BsFillReplyFill } from "react-icons/bs";
+import ForumAItem from "./ForumAItem";
 
-const ForumQList = (props) => {
+const ForumRList = (props) => {
+    const {
+        questionId
+    } =props;
     const navigate = useNavigate()
     const [questions, setQuestions] = useState([]);
 
@@ -13,10 +18,9 @@ const ForumQList = (props) => {
     const getInit = async () => {
         try {
             const db = getFirestore();
-            const q = query(collection(db, "forumQuestions"));
+            const q = query(collection(db, `forumQuestions/${questionId}/answers`));
 
             const querySnapshot = await getDocs(q);
-            console.log('querySnapshot',querySnapshot)
             let items = []
             querySnapshot.forEach((doc) => {
                 // doc.data() is never undefined for query doc snapshots
@@ -67,14 +71,8 @@ const ForumQList = (props) => {
             <List
                 dataSource={questions}
                 renderItem={(question) => (
-                    <List.Item className="cursor-pointer" onClick={() => {
-                        onGoToFormQuestion(question)
-                    }}>
-                        <div>
-                            <h3>{question.content}</h3>
-                            <p>Posted by: {question.firstName} {question.lastName}</p>
-                            {/*<p>Timestamp: {question.timestamp}</p>*/}
-                        </div>
+                    <List.Item className="">
+                        <ForumAItem answer={question} questionId={questionId}/>
                     </List.Item>
                 )}
             />
@@ -82,4 +80,4 @@ const ForumQList = (props) => {
     );
 };
 
-export default ForumQList;
+export default ForumRList;

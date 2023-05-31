@@ -1,10 +1,5 @@
 import React, { useContext } from "react";
 import { Layout, Menu } from "antd";
-import {
-    UserOutlined,
-    LaptopOutlined,
-    YoutubeOutlined,
-} from "@ant-design/icons";
 import * as links from "./../routes/links";
 import { SiReadthedocs } from "react-icons/si";
 import { MdOutlineForum } from "react-icons/md";
@@ -53,8 +48,6 @@ const Sidebar = (props) => {
             text: "Kiểm tra",
         },
     ];
-
-    console.log("location", location);
     return (
         <div className="w-[200px] bg-[#2c3145] flex flex-col">
             <div className="p-2">
