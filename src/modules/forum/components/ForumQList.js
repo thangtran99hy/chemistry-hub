@@ -1,83 +1,124 @@
-import React, { useEffect, useState } from "react";
-import {doc, getDoc, getFirestore, collection, query, where, getDocs} from "firebase/firestore";
-import { List } from 'antd';
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {doc, getDoc, getFirestore, collection, query, where, getDocs, orderBy, limit, startAfter} from "firebase/firestore";
 import {useNavigate} from "react-router-dom";
-
+import moment from "moment";
+const pageSize = 10;
 const ForumQList = (props) => {
-    const navigate = useNavigate()
-    const [questions, setQuestions] = useState([]);
+    const {
+        forceUpdate
+    } = props;
+    const navigate = useNavigate();
+    const [data, setData] = useState({
+        items: [],
+        page: 0,
+        lastDoc: null,
+        hasMore: true,
+        loading: false
+    })
+    const {
+        loading,
+        hasMore,
+        items,
+        page,
+        lastDoc
+    } = data;
 
-    useEffect( () => {
-        getInit()
-    }, []);
-    const getInit = async () => {
-        try {
-            const db = getFirestore();
-            const q = query(collection(db, "forumQuestions"));
-
-            const querySnapshot = await getDocs(q);
-            console.log('querySnapshot',querySnapshot)
-            let items = []
-            querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                console.log(doc.id, " => ", doc.data());
-                items = [...items, {
-                    id: doc.id,
-                    ...doc.data()
-                }]
-            });
-            setQuestions(items)
-        } catch (e) {
-            console.log('e',e)
+    useEffect(() => {
+        if (forceUpdate) {
+            setData(prev => ({
+                ...prev,
+                page: 0,
+                lastDoc: null,
+                hasMore: true,
+                loading: false
+            }))
         }
-        // const dbRef = ref(getDatabase());
-        // get(child(dbRef, `forumQuestions`))
-        //     .then((snapshot) => {
-        //         if (snapshot.exists()) {
-        //             const questionData = snapshot.val();
-        //
-        //             if (questionData) {
-        //                 const questionList = Object.keys(questionData).map(
-        //                     (key) => ({
-        //                         id: key,
-        //                         ...questionData[key],
-        //                     })
-        //                 );
-        //                 setQuestions(questionList);
-        //             } else {
-        //                 setQuestions([]);
-        //             }
-        //         } else {
-        //             console.log("No data available");
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         console.error(error);
-        //     });
-        //
-        // return () => {};
+    }, [forceUpdate])
+
+    const observer = useRef()
+    const lastItemRef = useCallback(node => {
+        if (loading) return
+        if (observer.current) observer.current.disconnect()
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setData(prev => ({
+                    ...prev,
+                    page: prev.page + 1
+                }))
+            }
+        })
+        if (node) observer.current.observe(node)
+    }, [loading, hasMore])
+    useEffect(() => {
+        if (page) {
+            getData();
+        } else {
+            setData(prev => ({
+                ...prev,
+                page: 1
+            }))
+        }
+    }, [page])
+    const getData = async () => {
+        if (loading) return;
+        setData(prev => ({
+            ...prev,
+            loading: true
+        }))
+        const db = getFirestore();
+        const q = lastDoc ? query(collection(db, "forumQuestions"), orderBy('timestamp', 'desc'), limit(pageSize), startAfter(lastDoc)) : query(collection(db, "forumQuestions"), orderBy('timestamp', 'desc'), limit(pageSize));
+        const querySnapshot = await getDocs(q);
+        let items = []
+        let lastDocTemp = null;
+        querySnapshot.forEach((doc, index) => {
+            items = [...items, {
+                id: doc.id,
+                ...doc.data()
+            }]
+            lastDocTemp = doc;
+        });
+        // setQuestions(items)
+        setData(prev => ({
+            ...prev,
+            hasMore: items.length === pageSize,
+            items: page === 1 ? items : [...prev.items, ...items],
+            lastDoc: lastDocTemp,
+            loading: false
+        }))
     }
 
     const onGoToFormQuestion = (question) => {
-        console.log('question',question)
         navigate(question.id)
     }
     return (
-        <div>
-            <List
-                dataSource={questions}
-                renderItem={(question) => (
-                    <List.Item className="cursor-pointer" onClick={() => {
-                        onGoToFormQuestion(question)
-                    }}>
-                        <div>
-                            <h3>{question.content}</h3>
-                            <p>Posted by: {question.firstName} {question.lastName}</p>
-                            {/*<p>Timestamp: {question.timestamp}</p>*/}
+        <div className="p-2 flex-1 overflow-y-auto">
+            {
+                items.map((question, index) => {
+                    return (
+                        <div
+                            ref={index === items.length - 1 ? lastItemRef : undefined}
+                            className="cursor-pointer my-2 p-2 border-b hover:bg-gray-50" onClick={() => {
+                            onGoToFormQuestion(question)
+                        }}>
+                            <div className="text-sm" dangerouslySetInnerHTML={{__html: question.content}}></div>
+                           <div className="flex items-center mt-2">
+                               <div className="font-bold mr-2 text-sm">{question.firstName} {question.lastName}</div>
+                               <div className="italic text-xs">{question.timestamp?.seconds ? moment.unix(question.timestamp.seconds).calendar() : ''}</div>
+                           </div>
                         </div>
-                    </List.Item>
-                )}
-            />
+                    )
+                })
+            }
+            {
+                loading && <div role="status" className="animate-pulse">
+                    <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
+                    <div className="flex items-center justify-start mt-4">
+                        <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
+                        <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    </div>
+                    <span className="sr-only">Loading...</span>
+                </div>
+            }
         </div>
     );
 };

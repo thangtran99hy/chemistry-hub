@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {doc, getDoc, getFirestore} from "firebase/firestore";
-import ForumAAdd from "./components/ForumAAdd";
-import ForumAList from "./components/ForumAList";
+import ForumRAdd from "./components/ForumRAdd";
+import ForumRList from "./components/ForumRList";
+import moment from "moment/moment";
 
 const ForumQuestion = (props) => {
     const {questionId} = useParams();
@@ -34,14 +35,23 @@ const ForumQuestion = (props) => {
     }
     if (!question) return (<></>)
     return (
-        <div>
-            <div>
-                <h3>{question.content}</h3>
-                <p>Posted by: {question.firstName} {question.lastName}</p>
-                {/*<p>Timestamp: {question.timestamp}</p>*/}
+        <div className="">
+            <div className="mb-4 pb-2 border-b border-b-gray-300">
+                <div className="md" dangerouslySetInnerHTML={{__html: question.content}}></div>
+                <div className="flex items-center mt-2">
+                    <div className="font-bold mr-2 text-sm">{question.firstName} {question.lastName}</div>
+                    <div className="italic text-xs">{question.timestamp?.seconds ? moment.unix(question.timestamp.seconds).calendar() : ''}</div>
+                </div>
             </div>
-            <ForumAAdd questionId={questionId}/>
-            <ForumAList questionId={questionId}/>
+            <div className="p-1">
+                <div className="p-1">
+                    <div className="font-bold text-2xl mb-2">Discuss the question</div>
+                    <ForumRAdd questionId={questionId} replyId={[]}/>
+                </div>
+                <div className="p-1">
+                    <ForumRList questionId={questionId} replyId={[]}/>
+                </div>
+            </div>
         </div>
     )
 }

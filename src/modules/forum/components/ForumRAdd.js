@@ -6,6 +6,9 @@ import { AuthContext } from "../../../providers/AuthProvider";
 import { v4 as uuidv4 } from "uuid";
 import { getFirestore, collection, addDoc, doc, setDoc } from "firebase/firestore";
 import {AiOutlineSend} from "react-icons/ai";
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+import EditorBoxSend from "./EditorBoxSend";
 
 const { TextArea } = Input;
 
@@ -21,7 +24,7 @@ const ForumRAdd = (props) => {
 
 
             // Add a new document in collection "cities"
-            await setDoc(doc(db, `forumQuestions/${questionId}/answers/${replyId.map(item => `${item}/reply`).join("/")}`, uuidv4()), {
+            await setDoc(doc(db, `forumQuestions/${questionId}/reply${replyId.map(item => `/${item}/reply`).join("")}`, uuidv4()), {
                 content: questionText,
                 timestamp: serverTimestamp(),
                 uid: authUser.uid,
@@ -35,18 +38,17 @@ const ForumRAdd = (props) => {
     };
 
     return (
-        <div>
-            <TextArea
-                rows={2}
+        <div className='forumAdd'>
+            <EditorBoxSend
+                isSmall={true}
                 value={questionText}
-                onChange={(event) => {
-                    setQuestionText(event.target.value);
+                onChange={(value) => {
+                    setQuestionText(value)
+                }}
+                onSubmit={() => {
+                    handleSubmit();
                 }}
             />
-
-            <Button onClick={() => {
-                handleSubmit();
-            }}  shape="circle" icon={<AiOutlineSend />} />
         </div>
     );
 };
