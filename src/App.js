@@ -16,11 +16,12 @@ import SignUp from "./modules/auth/components/SignUp";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import Auth from "./modules/auth";
+import LayoutAdmin from "./components/LayoutAdmin";
 
 const App = (props) => {
-    const { authUser, isAuthModal, setAuthUser, setIsAuthModal } =
+    const { authUser, isAuthModal, setAuthUser, setIsAuthModal, dataUser } =
         useContext(AuthContext);
-
+    console.log("dataUser", dataUser);
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -31,26 +32,37 @@ const App = (props) => {
         });
     }, []);
     const router = createBrowserRouter(
-        mainRoutes.map((route, index) => {
-            const {
-                component: ComponentRoute,
-                path,
-                isExact,
-                isPrivate,
-                isAdmin,
-            } = route;
-            return {
-                path: path,
-                element: (
-                    <LayoutApp>
-                        <ComponentRoute />
-                    </LayoutApp>
-                ),
-                // isExact: isExact,
-            };
-        })
+        mainRoutes
+            .map((route, index) => {
+                const {
+                    component: ComponentRoute,
+                    path,
+                    isExact,
+                    isPrivate,
+                    isAdmin,
+                } = route;
+                if (!dataUser?.isAdmin && isAdmin) {
+                    return undefined;
+                }
+                return {
+                    path: path,
+                    element: (
+                        <LayoutApp>
+                            {isAdmin ? (
+                                <LayoutAdmin>
+                                    <ComponentRoute />
+                                </LayoutAdmin>
+                            ) : (
+                                <ComponentRoute />
+                            )}
+                        </LayoutApp>
+                    ),
+                    // isExact: isExact,
+                };
+            })
+            .filter((item) => !!item)
     );
-    if (authUser === undefined) return <></>;
+    if (authUser === undefined || (authUser && !dataUser)) return <></>;
     return (
         <>
             <RouterProvider router={router} />

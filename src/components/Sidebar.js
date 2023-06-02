@@ -11,9 +11,10 @@ import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 import { AuthContext } from "../providers/AuthProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "./../firebase";
+import { RiAdminLine } from "react-icons/ri";
 
 const Sidebar = (props) => {
-    const { authUser, isAuthModal, setAuthUser, setIsAuthModal } =
+    const { authUser, isAuthModal, dataUser, setAuthUser, setIsAuthModal } =
         useContext(AuthContext);
     const onSignOut = () => {
         signOut(auth).then((res) => {
@@ -47,6 +48,21 @@ const Sidebar = (props) => {
             icon: HiAcademicCap,
             text: "Kiểm tra",
         },
+        ...(dataUser?.isAdmin
+            ? [
+                  {
+                      path: links.PATH_ADMIN,
+                      icon: RiAdminLine,
+                      text: "Admin",
+                  },
+              ]
+            : []),
+    ];
+    const listPathAdmin = [
+        links.PATH_ADMIN,
+        links.PATH_ADMIN_DOCS,
+        links.PATH_ADMIN_TEST,
+        links.PATH_ADMIN_VIDEO,
     ];
     return (
         <div className="w-[200px] bg-[#2c3145] flex flex-col">
@@ -57,7 +73,10 @@ const Sidebar = (props) => {
             </div>
             <div className="flex-1">
                 {menuItems.map((menuItem, index) => {
-                    const isActive = location.pathname === menuItem.path;
+                    const isActive =
+                        location.pathname === menuItem.path ||
+                        (menuItem.path === links.PATH_ADMIN &&
+                            listPathAdmin.includes(location.pathname));
                     return (
                         <NavLink to={menuItem.path}>
                             <div

@@ -1,11 +1,11 @@
-import {createContext, useEffect, useState} from "react";
+import { createContext, useEffect, useState } from "react";
 import { getDatabase, ref, child, get } from "firebase/database";
 
 export const AuthContext = createContext({});
 
 const AuthContextProvider = ({ children }) => {
     const [authUser, setAuthUser] = useState(undefined);
-    const [dataUser, setDataUser] = useState(null)
+    const [dataUser, setDataUser] = useState(null);
     const [isAuthModal, setIsAuthModal] = useState(false);
 
     useEffect(() => {
@@ -16,13 +16,14 @@ const AuthContextProvider = ({ children }) => {
                 .then((snapshot) => {
                     setDataUser({
                         ...snapshot.val(),
-                        uid: authUser.uid
-                    })
+                        uid: authUser.uid,
+                    });
                 })
                 .catch((error) => {
                     console.error(error);
                 });
-
+        } else {
+            setDataUser(null);
         }
     }, [authUser]);
     const contextData = {
@@ -31,7 +32,7 @@ const AuthContextProvider = ({ children }) => {
         isAuthModal,
         setIsAuthModal,
         dataUser,
-        setDataUser
+        setDataUser,
     };
     return (
         <AuthContext.Provider value={contextData}>

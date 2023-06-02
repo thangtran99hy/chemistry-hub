@@ -7,6 +7,10 @@ import Test from "../modules/test";
 import Video from "../modules/video";
 import * as links from "./links";
 import ForumQuestion from "../modules/forum/ForumQuestion";
+import Admin from "../modules/admin";
+import AdminDocs from "../modules/admin/pages/AdminDocs";
+import AdminVideo from "../modules/admin/pages/AdminVideo";
+import AdminTest from "../modules/admin/pages/AdminTest";
 export const mainRoutes = [
     {
         component: Home,
@@ -42,6 +46,30 @@ export const mainRoutes = [
         component: Test,
         path: links.PATH_TEST,
         isExact: true,
+    },
+    {
+        component: Admin,
+        path: links.PATH_ADMIN,
+        isExact: true,
+        isAdmin: true,
+    },
+    {
+        component: AdminDocs,
+        path: links.PATH_ADMIN_DOCS,
+        isExact: true,
+        isAdmin: true,
+    },
+    {
+        component: AdminVideo,
+        path: links.PATH_ADMIN_VIDEO,
+        isExact: true,
+        isAdmin: true,
+    },
+    {
+        component: AdminTest,
+        path: links.PATH_ADMIN_TEST,
+        isExact: true,
+        isAdmin: true,
     },
     {
         component: NotFoundPage,
