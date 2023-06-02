@@ -5,8 +5,10 @@ import { SiReadthedocs } from "react-icons/si";
 import { MdOutlineForum } from "react-icons/md";
 import { AiOutlineVideoCamera, AiOutlineFileSearch } from "react-icons/ai";
 import { HiAcademicCap } from "react-icons/hi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 const AdminSidebar = (props) => {
+    const location = useLocation();
+
     const menuItems = [
         {
             path: links.PATH_ADMIN_DOCS,
@@ -33,7 +35,11 @@ const AdminSidebar = (props) => {
                 return (
                     <NavLink
                         to={menuItem.path}
-                        className="flex items-center mx-1 px-2 py-1"
+                        className={`flex items-center mx-1 p-2 ${
+                            menuItem.path === location.pathname
+                                ? "bg-gray-200"
+                                : ""
+                        }`}
                     >
                         <menuItem.icon />
                         <div className="ml-1">{menuItem.text}</div>

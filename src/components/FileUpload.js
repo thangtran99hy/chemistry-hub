@@ -1,7 +1,8 @@
-import {useState} from "react";
+import { useState } from "react";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
-import {getFileExtension} from "../utils/functions";
+import { getFileExtension } from "../utils/functions";
+import { DRIVE_DIR } from "../utils/constants";
 
 function FileUpload() {
     const [file, setFile] = useState(null);
@@ -11,16 +12,18 @@ function FileUpload() {
     };
 
     const uploadFile = () => {
-        console.log(file)
+        console.log(file);
         // return;
         if (file) {
             const storage = getStorage();
-            const storageRef = ref(storage, `drive/${uuidv4()}.${getFileExtension(file.name)}`);
+            const storageRef = ref(
+                storage,
+                `${DRIVE_DIR}/${uuidv4()}.${getFileExtension(file.name)}`
+            );
 
             uploadBytes(storageRef, file).then((snapshot) => {
-                console.log('Uploaded a blob or file!');
+                console.log("Uploaded a blob or file!");
             });
-
         }
     };
 
@@ -32,4 +35,4 @@ function FileUpload() {
     );
 }
 
-export default FileUpload
+export default FileUpload;

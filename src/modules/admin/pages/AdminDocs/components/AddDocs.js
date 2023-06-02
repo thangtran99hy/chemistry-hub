@@ -13,6 +13,7 @@ import {
     serverTimestamp,
 } from "firebase/firestore";
 import { AuthContext } from "../../../../../providers/AuthProvider";
+import { DRIVE_DIR } from "../../../../../utils/constants";
 
 const AddDocs = (props) => {
     const { onForceUpdate } = props;
@@ -34,6 +35,7 @@ const AddDocs = (props) => {
                     title,
                     description: description ?? "",
                     timestamp: serverTimestamp(),
+                    docPath: resUpload.docPath,
                 })
                     .then((res) => {
                         form.resetFields();
@@ -64,10 +66,10 @@ const AddDocs = (props) => {
             if (file) {
                 const docId = uuidv4();
                 const storage = getStorage();
-                const storageRef = ref(
-                    storage,
-                    `drive/${docId}.${getFileExtension(file.name)}`
-                );
+                const docPath = `${DRIVE_DIR}/${docId}.${getFileExtension(
+                    file.name
+                )}`;
+                const storageRef = ref(storage, docPath);
 
                 uploadBytes(storageRef, file)
                     .then((snapshot) => {
@@ -75,6 +77,7 @@ const AddDocs = (props) => {
                         resolve({
                             status: "success",
                             docId: docId,
+                            docPath: docPath,
                         });
                     })
                     .catch((err) => {
