@@ -21,29 +21,19 @@ import {
     getFileExtension,
     handleDownload,
 } from "../../../../../utils/functions";
-const pageSize = 10;
-const ListDocs = (props) => {
-    const { forceUpdate, folderActive } = props;
+const pageSize = 20;
+const ListVideoFolders = (props) => {
+    const { forceUpdate, onclickFolder, folderActive } = props;
     const navigate = useNavigate();
     const [data, setData] = useState({
         items: [],
-        page: null,
+        page: 0,
         lastDoc: null,
         hasMore: true,
         loading: false,
     });
     const { loading, hasMore, items, page, lastDoc } = data;
 
-    useEffect(() => {
-        setData((prev) => ({
-            ...prev,
-            items: [],
-            page: 0,
-            lastDoc: null,
-            hasMore: true,
-            loading: false,
-        }));
-    }, [folderActive])
     useEffect(() => {
         if (forceUpdate) {
             setData((prev) => ({
@@ -74,7 +64,6 @@ const ListDocs = (props) => {
         [loading, hasMore]
     );
     useEffect(() => {
-        if (page === null) return;
         if (page) {
             getData();
         } else {
@@ -91,20 +80,17 @@ const ListDocs = (props) => {
             loading: true,
         }));
         const db = getFirestore();
-        console.log(folderActive)
         const q = lastDoc
             ? query(
-                collection(db, "docs"),
-            where( "folder", "==", folderActive),
+                collection(db, "videoFolders"),
                 orderBy("timestamp", "desc"),
                 limit(pageSize),
-                startAfter(lastDoc),
+                startAfter(lastDoc)
             )
             : query(
-                collection(db, "docs"),
-                where( "folder", "==", folderActive),
-        orderBy("timestamp", "desc"),
-                limit(pageSize),
+                collection(db, "videoFolders"),
+                orderBy("timestamp", "desc"),
+                limit(pageSize)
             );
         const querySnapshot = await getDocs(q);
         let items = [];
@@ -129,68 +115,28 @@ const ListDocs = (props) => {
         }));
     };
 
-    const onDownloadDoc = (doc) => {
-        // navigate(question.id);
-        console.log("doc", doc);
-        const storage = getStorage();
-        getDownloadURL(ref(storage, doc.docPath))
-            .then((url) => {
-                handleDownload(
-                    url,
-                    `${doc.title}.${getFileExtension(doc.docPath)}`
-                );
-                console.log("url", url);
-                // // `url` is the download URL for 'images/stars.jpg'
-
-                // // This can be downloaded directly:
-                // const xhr = new XMLHttpRequest();
-                // xhr.responseType = "blob";
-                // xhr.onload = (event) => {
-                //     const blob = xhr.response;
-                // };
-                // xhr.open("GET", url);
-                // xhr.send();
-            })
-            .catch((error) => {
-                // Handle any errors
-            });
-    };
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
+            <div
+                className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === null ? 'bg-gray-300' : ''}`}
+                onClick={() => {
+                    onclickFolder(null)
+                }}
+            >
+                <div>Main</div>
+            </div>
             {items.map((item, index) => {
                 return (
                     <div
+                        onClick={() => {
+                            onclickFolder(item.id)
+                        }}
                         ref={
                             index === items.length - 1 ? lastItemRef : undefined
                         }
-                        className="my-2 p-2 border-b hover:bg-gray-50"
+                        className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === item.id ? 'bg-gray-300' : ''}`}
                     >
-                        <div className="flex">
-                            <div className="flex-1">
-                                <div className="text-sm">{item.title}</div>
-                                <div className="text-xs italic">
-                                    {item.description}
-                                </div>
-                            </div>
-                            <div
-                                className="cursor-pointer"
-                                onClick={() => onDownloadDoc(item)}
-                            >
-                                <GrDocumentDownload />
-                            </div>
-                        </div>
-                        <div className="flex items-center mt-2">
-                            <div className="font-bold mr-2 text-sm">
-                                {item.firstName} {item.lastName}
-                            </div>
-                            <div className="italic text-xs">
-                                {item.timestamp?.seconds
-                                    ? moment
-                                          .unix(item.timestamp.seconds)
-                                          .calendar()
-                                    : ""}
-                            </div>
-                        </div>
+                        <div>{item.name}</div>
                     </div>
                 );
             })}
@@ -208,4 +154,4 @@ const ListDocs = (props) => {
     );
 };
 
-export default ListDocs;
+export default ListVideoFolders;

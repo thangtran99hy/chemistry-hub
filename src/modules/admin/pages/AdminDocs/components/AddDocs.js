@@ -16,7 +16,7 @@ import { AuthContext } from "../../../../../providers/AuthProvider";
 import { DRIVE_DIR } from "../../../../../utils/constants";
 
 const AddDocs = (props) => {
-    const { onForceUpdate } = props;
+    const { onForceUpdate, folderActive } = props;
     const [form] = Form.useForm();
     const { authUser, dataUser } = useContext(AuthContext);
     const [api, contextHolder] = notification.useNotification();
@@ -36,6 +36,7 @@ const AddDocs = (props) => {
                     description: description ?? "",
                     timestamp: serverTimestamp(),
                     docPath: resUpload.docPath,
+                    folder: folderActive
                 })
                     .then((res) => {
                         form.resetFields();

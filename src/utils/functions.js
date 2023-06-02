@@ -15,3 +15,9 @@ export const handleDownload = (url, fileName) => {
     link.click();
     document.body.removeChild(link);
 };
+
+export const extractVideoId = (url) => {
+    if (!url) return null;
+    var match = url.match(/(?:youtube.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu.be\/|ytcroxxCATY(?=\/))([\w-]{11})/);
+    return (match && match[1]) || null;
+}

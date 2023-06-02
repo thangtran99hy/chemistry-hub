@@ -22,7 +22,7 @@ import {
     handleDownload,
 } from "../../../../../utils/functions";
 const pageSize = 10;
-const ListDocs = (props) => {
+const ListVideo = (props) => {
     const { forceUpdate, folderActive } = props;
     const navigate = useNavigate();
     const [data, setData] = useState({
@@ -208,4 +208,4 @@ const ListDocs = (props) => {
     );
 };
 
-export default ListDocs;
+export default ListVideo;
