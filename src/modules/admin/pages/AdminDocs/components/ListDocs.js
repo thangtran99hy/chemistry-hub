@@ -43,7 +43,7 @@ const ListDocs = (props) => {
             hasMore: true,
             loading: false,
         }));
-    }, [folderActive])
+    }, [folderActive]);
     useEffect(() => {
         if (forceUpdate) {
             setData((prev) => ({
@@ -91,21 +91,21 @@ const ListDocs = (props) => {
             loading: true,
         }));
         const db = getFirestore();
-        console.log(folderActive)
+        console.log(folderActive);
         const q = lastDoc
             ? query(
-                collection(db, "docs"),
-            where( "folder", "==", folderActive),
-                orderBy("timestamp", "desc"),
-                limit(pageSize),
-                startAfter(lastDoc),
-            )
+                  collection(db, "docs"),
+                  where("folder", "==", folderActive),
+                  orderBy("timestamp", "desc"),
+                  limit(pageSize),
+                  startAfter(lastDoc)
+              )
             : query(
-                collection(db, "docs"),
-                where( "folder", "==", folderActive),
-        orderBy("timestamp", "desc"),
-                limit(pageSize),
-            );
+                  collection(db, "docs"),
+                  where("folder", "==", folderActive),
+                  orderBy("timestamp", "desc"),
+                  limit(pageSize)
+              );
         const querySnapshot = await getDocs(q);
         let items = [];
         let lastDocTemp = null;

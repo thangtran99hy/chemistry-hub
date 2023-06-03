@@ -82,16 +82,16 @@ const ListVideoFolders = (props) => {
         const db = getFirestore();
         const q = lastDoc
             ? query(
-                collection(db, "videoFolders"),
-                orderBy("timestamp", "desc"),
-                limit(pageSize),
-                startAfter(lastDoc)
-            )
+                  collection(db, "videoFolders"),
+                  orderBy("timestamp", "desc"),
+                  limit(pageSize),
+                  startAfter(lastDoc)
+              )
             : query(
-                collection(db, "videoFolders"),
-                orderBy("timestamp", "desc"),
-                limit(pageSize)
-            );
+                  collection(db, "videoFolders"),
+                  orderBy("timestamp", "desc"),
+                  limit(pageSize)
+              );
         const querySnapshot = await getDocs(q);
         let items = [];
         let lastDocTemp = null;
@@ -118,9 +118,11 @@ const ListVideoFolders = (props) => {
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
             <div
-                className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === null ? 'bg-gray-300' : ''}`}
+                className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
+                    folderActive === null ? "bg-gray-300" : ""
+                }`}
                 onClick={() => {
-                    onclickFolder(null)
+                    onclickFolder(null);
                 }}
             >
                 <div>Main</div>
@@ -129,12 +131,14 @@ const ListVideoFolders = (props) => {
                 return (
                     <div
                         onClick={() => {
-                            onclickFolder(item.id)
+                            onclickFolder(item.id);
                         }}
                         ref={
                             index === items.length - 1 ? lastItemRef : undefined
                         }
-                        className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === item.id ? 'bg-gray-300' : ''}`}
+                        className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
+                            folderActive === item.id ? "bg-gray-300" : ""
+                        }`}
                     >
                         <div>{item.name}</div>
                     </div>

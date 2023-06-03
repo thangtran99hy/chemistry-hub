@@ -18,6 +18,12 @@ export const handleDownload = (url, fileName) => {
 
 export const extractVideoId = (url) => {
     if (!url) return null;
-    var match = url.match(/(?:youtube.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu.be\/|ytcroxxCATY(?=\/))([\w-]{11})/);
+    var match = url.match(
+        /(?:youtube.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu.be\/|ytcroxxCATY(?=\/))([\w-]{11})/
+    );
     return (match && match[1]) || null;
-}
+};
+
+export const delay = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};

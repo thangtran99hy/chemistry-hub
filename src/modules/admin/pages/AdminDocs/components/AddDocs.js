@@ -29,6 +29,7 @@ const AddDocs = (props) => {
                 const db = getFirestore();
                 console.log(resUpload.docId);
                 setDoc(doc(db, "docs", resUpload.docId), {
+                    // docId: resUpload.docId,
                     uid: authUser.uid,
                     firstName: dataUser.firstName,
                     lastName: dataUser.lastName,
@@ -36,7 +37,7 @@ const AddDocs = (props) => {
                     description: description ?? "",
                     timestamp: serverTimestamp(),
                     docPath: resUpload.docPath,
-                    folder: folderActive
+                    folder: folderActive,
                 })
                     .then((res) => {
                         form.resetFields();
