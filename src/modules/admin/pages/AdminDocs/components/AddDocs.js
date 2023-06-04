@@ -27,7 +27,6 @@ const AddDocs = (props) => {
         if (resUpload.status === "success") {
             try {
                 const db = getFirestore();
-                console.log(resUpload.docId);
                 setDoc(doc(db, "docs", resUpload.docId), {
                     // docId: resUpload.docId,
                     uid: authUser.uid,

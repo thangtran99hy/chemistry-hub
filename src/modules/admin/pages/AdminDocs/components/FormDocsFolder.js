@@ -26,7 +26,7 @@ const AddDocsFolder = (props) => {
         try {
             const db = getFirestore();
             const folderId = uuidv4()
-            setDoc(doc(db, "folders", folderId), {
+            setDoc(doc(db, "docFolders", folderId), {
                 uid: authUser.uid,
                 firstName: dataUser.firstName,
                 lastName: dataUser.lastName,
@@ -52,7 +52,7 @@ const AddDocsFolder = (props) => {
     };
     return (
         <div>
-            <div className="text-2xl font-bold mb-1">Thêm mới một tài liệu</div>
+            <div className="text-2xl font-bold mb-1">Thêm mới một thư mục tài liệu</div>
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 <Form.Item
                     name="name"

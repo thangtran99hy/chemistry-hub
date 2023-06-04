@@ -7,7 +7,6 @@ import moment from "moment/moment";
 
 const ForumQuestion = (props) => {
     const {questionId} = useParams();
-    console.log('questionId',questionId);
     const [question, setQuestion] = useState(null);
     useEffect(() => {
         getInit()
@@ -20,7 +19,6 @@ const ForumQuestion = (props) => {
            const docSnap = await getDoc(docRef);
 
            if (docSnap.exists()) {
-               console.log("Document data:", docSnap.data());
                setQuestion({
                    id: questionId,
                    ...docSnap.data()

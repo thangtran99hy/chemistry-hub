@@ -10,13 +10,14 @@ import {
     orderBy,
     limit,
     startAfter,
+    deleteDoc
 } from "firebase/firestore";
 import { GrDocumentDownload } from "react-icons/gr";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { Button } from "antd";
+import {Button, Popover} from "antd";
 import {
     getFileExtension,
     handleDownload,
@@ -91,7 +92,6 @@ const ListDocs = (props) => {
             loading: true,
         }));
         const db = getFirestore();
-        console.log(folderActive);
         const q = lastDoc
             ? query(
                   collection(db, "docs"),
@@ -130,8 +130,6 @@ const ListDocs = (props) => {
     };
 
     const onDownloadDoc = (doc) => {
-        // navigate(question.id);
-        console.log("doc", doc);
         const storage = getStorage();
         getDownloadURL(ref(storage, doc.docPath))
             .then((url) => {
@@ -139,59 +137,73 @@ const ListDocs = (props) => {
                     url,
                     `${doc.title}.${getFileExtension(doc.docPath)}`
                 );
-                console.log("url", url);
-                // // `url` is the download URL for 'images/stars.jpg'
-
-                // // This can be downloaded directly:
-                // const xhr = new XMLHttpRequest();
-                // xhr.responseType = "blob";
-                // xhr.onload = (event) => {
-                //     const blob = xhr.response;
-                // };
-                // xhr.open("GET", url);
-                // xhr.send();
             })
             .catch((error) => {
                 // Handle any errors
             });
     };
+    const onDeleteDoc = async (item) => {
+        const db = getFirestore();
+        await deleteDoc(doc(db, "docs", item.id));
+        setData(prev => ({
+            ...prev,
+            items: items.filter(itemP => itemP.id !== item.id)
+        }))
+    }
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
             {items.map((item, index) => {
                 return (
-                    <div
-                        ref={
-                            index === items.length - 1 ? lastItemRef : undefined
+                    <Popover
+                        content={
+                        <div>
+                            <div>
+                                Change folder
+                            </div>
+                            <Button onClick={() => {
+                                onDeleteDoc(item)
+                            }}>
+                                Delete
+                            </Button>
+                        </div>
                         }
-                        className="my-2 p-2 border-b hover:bg-gray-50"
                     >
-                        <div className="flex">
-                            <div className="flex-1">
-                                <div className="text-sm">{item.title}</div>
-                                <div className="text-xs italic">
-                                    {item.description}
+                        <div
+                            ref={
+                                index === items.length - 1 ? lastItemRef : undefined
+                            }
+                            className="my-2 p-2 border-b hover:bg-gray-50"
+                        >
+                            <div className="flex">
+                                <div className="flex-1">
+                                    <div className="text-sm">{item.title}</div>
+                                    <div className="text-xs italic">
+                                        {item.description}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        className="cursor-pointer"
+                                        onClick={() => onDownloadDoc(item)}
+                                    >
+                                        <GrDocumentDownload />
+                                    </div>
                                 </div>
                             </div>
-                            <div
-                                className="cursor-pointer"
-                                onClick={() => onDownloadDoc(item)}
-                            >
-                                <GrDocumentDownload />
+                            <div className="flex items-center mt-2">
+                                <div className="font-bold mr-2 text-sm">
+                                    {item.firstName} {item.lastName}
+                                </div>
+                                <div className="italic text-xs">
+                                    {item.timestamp?.seconds
+                                        ? moment
+                                            .unix(item.timestamp.seconds)
+                                            .calendar()
+                                        : ""}
+                                </div>
                             </div>
                         </div>
-                        <div className="flex items-center mt-2">
-                            <div className="font-bold mr-2 text-sm">
-                                {item.firstName} {item.lastName}
-                            </div>
-                            <div className="italic text-xs">
-                                {item.timestamp?.seconds
-                                    ? moment
-                                          .unix(item.timestamp.seconds)
-                                          .calendar()
-                                    : ""}
-                            </div>
-                        </div>
-                    </div>
+                    </Popover>
                 );
             })}
             {loading && (

@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import AddDocs from "./components/AddDocs";
 import ListDocs from "./components/ListDocs";
 import { Button, Modal } from "antd";
-import AddDocsFolder from "./components/AddDocsFolder";
-// IoAddCircle
+import FormDocsFolder from "./components/FormDocsFolder";
 import { HiFolderAdd } from "react-icons/hi";
 import ListDocsFolders from "./components/ListDocsFolders";
 const MODAL_ADD_FILE = 'add_file';
+const MODAL_EDIT_FILE = 'edit_file';
 const MODAL_ADD_FOLDER = 'add_folder';
+const MODAL_EDIT_FOLDER = 'edit_folder';
 const AdminDocs = (props) => {
-    const [isModalAdd, setIsModalAdd] = useState(null);
+    const [modalType, setModalType] = useState(null);
     const [forceUpdate, setForceUpdate] = useState(null);
     const [folderActive, setFolderActive] = useState(null);
     useEffect(() => {
@@ -24,7 +25,7 @@ const AdminDocs = (props) => {
                         <div>
                             Folders
                         </div>
-                        <Button  icon={<HiFolderAdd />} onClick={() => setIsModalAdd(MODAL_ADD_FOLDER)} />
+                        <Button  icon={<HiFolderAdd />} onClick={() => setModalType(MODAL_ADD_FOLDER)} />
                     </div>
                     <ListDocsFolders forceUpdate={forceUpdate === MODAL_ADD_FOLDER} onclickFolder={(id) => {
                         setFolderActive(id)
@@ -33,41 +34,42 @@ const AdminDocs = (props) => {
                     />
                 </div>
                 <div className="px-2 flex-1 h-full">
-                    <Button onClick={() => setIsModalAdd(MODAL_ADD_FILE)}>
+                    <Button onClick={() => setModalType(MODAL_ADD_FILE)}>
                         Thêm mới tài liệu
                     </Button>
                     <ListDocs forceUpdate={forceUpdate === MODAL_ADD_FILE}   folderActive={folderActive}/>
                 </div>
-            {isModalAdd && (
+            {modalType && (
                 <Modal
-                    open={!!isModalAdd}
+                    open={!!modalType}
                     onClose={() => {
-                        setIsModalAdd(null);
+                        setModalType(null);
                     }}
                     onCancel={() => {
-                        setIsModalAdd(null);
+                        setModalType(null);
                     }}
                     footer={null}
                 >
                     {
-                        isModalAdd === MODAL_ADD_FILE
+                        (modalType === MODAL_ADD_FILE || modalType === MODAL_EDIT_FILE)
                         ?
                             <AddDocs
                                 onForceUpdate={() => {
                                     setForceUpdate(MODAL_ADD_FILE);
-                                    setIsModalAdd(null);
+                                    setModalType(null);
                                 }}
                                 folderActive={folderActive}
                             />
                             :
-                            isModalAdd === MODAL_ADD_FOLDER
+                            (modalType === MODAL_ADD_FOLDER || modalType === MODAL_EDIT_FOLDER)
                         ?
-                                <AddDocsFolder
+                                <FormDocsFolder
                                     onForceUpdate={() => {
                                         setForceUpdate(MODAL_ADD_FOLDER);
-                                        setIsModalAdd(null);
+                                        setModalType(null);
                                     }}
                                     folderActive={folderActive}
+                                    // isEdit={}
                                 />
                                 :
                                 <></>

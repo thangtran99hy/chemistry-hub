@@ -9,18 +9,10 @@ import {
     getDocs,
     orderBy,
     limit,
-    startAfter,
+    startAfter, deleteDoc,
 } from "firebase/firestore";
-import { GrDocumentDownload } from "react-icons/gr";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
-import { Button } from "antd";
-import {
-    getFileExtension,
-    handleDownload,
-} from "../../../../../utils/functions";
+import {Button, Popover} from "antd";
 const pageSize = 20;
 const ListDocsFolders = (props) => {
     const { forceUpdate, onclickFolder, folderActive } = props;
@@ -82,13 +74,13 @@ const ListDocsFolders = (props) => {
         const db = getFirestore();
         const q = lastDoc
             ? query(
-                collection(db, "folders"),
+                collection(db, "docFolders"),
                 orderBy("timestamp", "desc"),
                 limit(pageSize),
                 startAfter(lastDoc)
             )
             : query(
-                collection(db, "folders"),
+                collection(db, "docFolders"),
                 orderBy("timestamp", "desc"),
                 limit(pageSize)
             );
@@ -115,6 +107,15 @@ const ListDocsFolders = (props) => {
         }));
     };
 
+    const onDeleteFolder = async (item) => {
+        const db = getFirestore();
+        await deleteDoc(doc(db, "docFolders", item.id));
+        setData(prev => ({
+            ...prev,
+            items: items.filter(itemP => itemP.id !== item.id)
+        }))
+    }
+
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
             <div
@@ -127,17 +128,34 @@ const ListDocsFolders = (props) => {
             </div>
             {items.map((item, index) => {
                 return (
-                    <div
-                        onClick={() => {
-                            onclickFolder(item.id)
-                        }}
-                        ref={
-                            index === items.length - 1 ? lastItemRef : undefined
+                    <Popover
+                        content={
+                            <div>
+                                <Button onClick={() => {
+
+                                }}>
+                                    Rename
+                                </Button>
+                                <Button onClick={() => {
+                                    onDeleteFolder(item)
+                                }}>
+                                    Delete
+                                </Button>
+                            </div>
                         }
-                        className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === item.id ? 'bg-gray-300' : ''}`}
                     >
-                        <div>{item.name}</div>
-                    </div>
+                        <div
+                            onClick={() => {
+                                onclickFolder(item.id)
+                            }}
+                            ref={
+                                index === items.length - 1 ? lastItemRef : undefined
+                            }
+                            className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === item.id ? 'bg-gray-300' : ''}`}
+                        >
+                            <div>{item.name}</div>
+                        </div>
+                    </Popover>
                 );
             })}
             {loading && (

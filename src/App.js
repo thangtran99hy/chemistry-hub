@@ -21,7 +21,6 @@ import LayoutAdmin from "./components/LayoutAdmin";
 const App = (props) => {
     const { authUser, isAuthModal, setAuthUser, setIsAuthModal, dataUser } =
         useContext(AuthContext);
-    console.log("dataUser", dataUser);
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
