@@ -1,0 +1,19 @@
+iframe {
+  width: 100%;
+}
+
+.addTestModal {
+  width: 100vw!important;
+  height: 100vh!important;
+  .ant-modal-content {
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    overflow: hidden;
+    border-radius: 0px;
+    .ant-modal-body {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

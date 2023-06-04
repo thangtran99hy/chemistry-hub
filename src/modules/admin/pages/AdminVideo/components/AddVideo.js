@@ -1,7 +1,5 @@
 import React, {useContext, useState} from "react";
 import { Form, Input, Upload, Button, notification } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import {extractVideoId, getFileExtension} from "../../../../../utils/functions";
 import {

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import AddDocs from "./components/AddTest";
-import ListDocs from "./components/ListTest";
+import AddTest from "./components/AddTest";
+import ListTest from "./components/ListTest";
 import { Button, Modal } from "antd";
-import { HiFolderAdd } from "react-icons/hi";
-const MODAL_ADD_FILE = 'add_file';
-const MODAL_ADD_FOLDER = 'add_folder';
-const AdminDocs = (props) => {
+import PreviewTest from "./components/PreviewTest";
+const AdminTest = (props) => {
     const [isModalAdd, setIsModalAdd] = useState(null);
     const [forceUpdate, setForceUpdate] = useState(null);
     const [folderActive, setFolderActive] = useState(null);
+    const [testPreview, setTestPreview] = useState(null);
     useEffect(() => {
         if (forceUpdate) {
             setForceUpdate(null);
@@ -16,10 +15,10 @@ const AdminDocs = (props) => {
     }, [forceUpdate]);
     return (
         <div className="flex items-start h-full">
-            <Button onClick={() => setIsModalAdd(MODAL_ADD_FILE)}>
+            <Button onClick={() => setIsModalAdd(true)}>
                 Thêm mới bài test
             </Button>
-            <ListDocs forceUpdate={forceUpdate === MODAL_ADD_FILE}   folderActive={folderActive}/>
+            <ListTest forceUpdate={forceUpdate} onClickItem={(item) => setTestPreview(item)}/>
             {isModalAdd && (
                 <Modal
                     open={!!isModalAdd}
@@ -30,18 +29,33 @@ const AdminDocs = (props) => {
                         setIsModalAdd(null);
                     }}
                     footer={null}
+                    className="w-[100vw] h-[100vh top-0 bottom-0 left-0 right-0 addTestModal"
                 >
-                    <AddDocs
+                    <AddTest
                         onForceUpdate={() => {
-                            setForceUpdate(MODAL_ADD_FILE);
+                            setForceUpdate(true);
                             setIsModalAdd(null);
                         }}
                         folderActive={folderActive}
                     />
                 </Modal>
             )}
+            {testPreview && (
+                <Modal
+                    open={!!testPreview}
+                    onClose={() => {
+                        setTestPreview(null);
+                    }}
+                    onCancel={() => {
+                        setTestPreview(null);
+                    }}
+                    footer={null}
+                >
+                    <PreviewTest testPreview={testPreview} />
+                </Modal>
+            )}
         </div>
     );
 };
 
-export default AdminDocs;
+export default AdminTest;

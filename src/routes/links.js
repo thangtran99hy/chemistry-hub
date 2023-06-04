@@ -6,7 +6,10 @@ export const PATH_VIDEO = "/video";
 export const PATH_FORMULAS = "/formulas";
 export const PATH_TEST = "/test";
 
+export const PATH_TAKE_TEST = '/take-test/:id';
+
 export const PATH_ADMIN = "/admin";
 export const PATH_ADMIN_DOCS = "/admin/docs";
 export const PATH_ADMIN_VIDEO = "/admin/video";
 export const PATH_ADMIN_TEST = "/admin/test";
+
