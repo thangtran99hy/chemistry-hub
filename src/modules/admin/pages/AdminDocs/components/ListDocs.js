@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     doc,
-    getDoc,
     getFirestore,
     collection,
     query,
@@ -10,22 +9,23 @@ import {
     orderBy,
     limit,
     startAfter,
-    deleteDoc
+    deleteDoc,
 } from "firebase/firestore";
-import { GrDocumentDownload } from "react-icons/gr";
+import { MdSimCardDownload } from "react-icons/md";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
-import { useNavigate } from "react-router-dom";
+import TypeDocIcon from "./../../../../../assets/file_docs.svg";
+import TypePdfIcon from "./../../../../../assets/file_pdf.svg";
+import TypeXlsIcon from "./../../../../../assets/file_xls.svg";
+import TypePptIcon from "./../../../../../assets/file_ppt.svg";
 import moment from "moment";
-import {Button, Popover} from "antd";
+import { Button, Popover, Col, Row } from "antd";
 import {
     getFileExtension,
     handleDownload,
 } from "../../../../../utils/functions";
 const pageSize = 10;
 const ListDocs = (props) => {
-    const { forceUpdate, folderActive } = props;
-    const navigate = useNavigate();
+    const { forceUpdate, folderActive, onEditDoc, isDisplay } = props;
     const [data, setData] = useState({
         items: [],
         page: null,
@@ -119,7 +119,6 @@ const ListDocs = (props) => {
             ];
             lastDocTemp = doc;
         });
-        // setQuestions(items)
         setData((prev) => ({
             ...prev,
             hasMore: items.length === pageSize,
@@ -138,84 +137,118 @@ const ListDocs = (props) => {
                     `${doc.title}.${getFileExtension(doc.docPath)}`
                 );
             })
-            .catch((error) => {
-                // Handle any errors
-            });
+            .catch((error) => {});
     };
     const onDeleteDoc = async (item) => {
         const db = getFirestore();
         await deleteDoc(doc(db, "docs", item.id));
-        setData(prev => ({
+        setData((prev) => ({
             ...prev,
-            items: items.filter(itemP => itemP.id !== item.id)
-        }))
-    }
+            items: items.filter((itemP) => itemP.id !== item.id),
+        }));
+    };
+
+    const showDocTypeIcon = (item) => {
+        let icon = TypeDocIcon;
+        const docType = getFileExtension(item.docPath);
+        switch (docType) {
+            case "doc":
+            case "docx":
+                icon = TypeDocIcon;
+                break;
+            case "pdf":
+                icon = TypePdfIcon;
+                break;
+            case "xlsx":
+            case "xls":
+                icon = TypeXlsIcon;
+                break;
+            case "ppt":
+            case "pptx":
+                icon = TypePptIcon;
+                break;
+            default:
+                break;
+        }
+        return icon;
+    };
+    const showDocItem = (item, index) => {
+        return (
+            <Col xs={24} sm={24} md={12} lg={8} xl={6} className="p-2">
+                <div
+                    ref={index === items.length - 1 ? lastItemRef : undefined}
+                    className="my-2 p-2 border rounded-xl hover:bg-gray-50"
+                >
+                    <img src={showDocTypeIcon(item)} />
+                    <div className="text-sm">{item.title}</div>
+                    <div className="py-1 flex justify-end">
+                        <div
+                            className="cursor-pointer"
+                            onClick={() => onDownloadDoc(item)}
+                        >
+                            <MdSimCardDownload className="text-2xl" />
+                        </div>
+                    </div>
+                    <div className="flex items-center mt-2">
+                        <div className="font-bold mr-2 text-xs">
+                            {item.firstName} {item.lastName}
+                        </div>
+                        <div className="italic text-xs">
+                            {item.timestamp?.seconds
+                                ? moment.unix(item.timestamp.seconds).calendar()
+                                : ""}
+                        </div>
+                    </div>
+                </div>
+            </Col>
+        );
+    };
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
-            {items.map((item, index) => {
-                return (
-                    <Popover
-                        content={
-                        <div>
-                            <div>
-                                Change folder
-                            </div>
-                            <Button onClick={() => {
-                                onDeleteDoc(item)
-                            }}>
-                                Delete
-                            </Button>
-                        </div>
-                        }
-                    >
-                        <div
-                            ref={
-                                index === items.length - 1 ? lastItemRef : undefined
-                            }
-                            className="my-2 p-2 border-b hover:bg-gray-50"
-                        >
-                            <div className="flex">
-                                <div className="flex-1">
-                                    <div className="text-sm">{item.title}</div>
-                                    <div className="text-xs italic">
-                                        {item.description}
-                                    </div>
-                                </div>
+            <Row>
+                {items.map((item, index) => {
+                    if (isDisplay) {
+                        return showDocItem(item, index);
+                    }
+                    return (
+                        <Popover
+                            content={
                                 <div>
-                                    <div
-                                        className="cursor-pointer"
-                                        onClick={() => onDownloadDoc(item)}
+                                    <Button
+                                        onClick={() => {
+                                            onEditDoc(item);
+                                        }}
                                     >
-                                        <GrDocumentDownload />
-                                    </div>
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            onDeleteDoc(item);
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
                                 </div>
+                            }
+                        >
+                            {showDocItem(item, index)}
+                        </Popover>
+                    );
+                })}
+
+                {loading && (
+                    <Col xs={24} sm={24} md={12} lg={8} xl={6}>
+                        <div role="status" className="animate-pulse">
+                            <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
+                            <div className="flex items-center justify-start mt-4">
+                                <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
+                                <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                             </div>
-                            <div className="flex items-center mt-2">
-                                <div className="font-bold mr-2 text-sm">
-                                    {item.firstName} {item.lastName}
-                                </div>
-                                <div className="italic text-xs">
-                                    {item.timestamp?.seconds
-                                        ? moment
-                                            .unix(item.timestamp.seconds)
-                                            .calendar()
-                                        : ""}
-                                </div>
-                            </div>
+                            <span className="sr-only">Loading...</span>
                         </div>
-                    </Popover>
-                );
-            })}
-            {loading && (
-                <div role="status" className="animate-pulse">
-                    <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
-                    <div className="flex items-center justify-start mt-4">
-                        <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                    </div>
-                    <span className="sr-only">Loading...</span>
-                </div>
-            )}
+                    </Col>
+                )}
+            </Row>
         </div>
     );
 };

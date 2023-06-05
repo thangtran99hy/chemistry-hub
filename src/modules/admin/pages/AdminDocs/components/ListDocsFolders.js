@@ -9,14 +9,21 @@ import {
     getDocs,
     orderBy,
     limit,
-    startAfter, deleteDoc,
+    startAfter,
+    deleteDoc,
+    updateDoc,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import {Button, Popover} from "antd";
+import { Button, Popover } from "antd";
 const pageSize = 20;
 const ListDocsFolders = (props) => {
-    const { forceUpdate, onclickFolder, folderActive } = props;
-    const navigate = useNavigate();
+    const {
+        forceUpdate,
+        onclickFolder,
+        folderActive,
+        onEditFolder,
+        isDisplay,
+    } = props;
     const [data, setData] = useState({
         items: [],
         page: 0,
@@ -74,16 +81,16 @@ const ListDocsFolders = (props) => {
         const db = getFirestore();
         const q = lastDoc
             ? query(
-                collection(db, "docFolders"),
-                orderBy("timestamp", "desc"),
-                limit(pageSize),
-                startAfter(lastDoc)
-            )
+                  collection(db, "docFolders"),
+                  orderBy("timestamp", "desc"),
+                  limit(pageSize),
+                  startAfter(lastDoc)
+              )
             : query(
-                collection(db, "docFolders"),
-                orderBy("timestamp", "desc"),
-                limit(pageSize)
-            );
+                  collection(db, "docFolders"),
+                  orderBy("timestamp", "desc"),
+                  limit(pageSize)
+              );
         const querySnapshot = await getDocs(q);
         let items = [];
         let lastDocTemp = null;
@@ -97,7 +104,6 @@ const ListDocsFolders = (props) => {
             ];
             lastDocTemp = doc;
         });
-        // setQuestions(items)
         setData((prev) => ({
             ...prev,
             hasMore: items.length === pageSize,
@@ -110,35 +116,75 @@ const ListDocsFolders = (props) => {
     const onDeleteFolder = async (item) => {
         const db = getFirestore();
         await deleteDoc(doc(db, "docFolders", item.id));
-        setData(prev => ({
+        setData((prev) => ({
             ...prev,
-            items: items.filter(itemP => itemP.id !== item.id)
-        }))
-    }
+            items: items.filter((itemP) => itemP.id !== item.id),
+        }));
+        await moveDocsInFolderToMain(item);
+    };
+
+    const moveDocsInFolderToMain = async (item) => {
+        const db = getFirestore();
+        const q = query(collection(db, "docs"), where("folder", "==", item.id));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((docItem, index) => {
+            try {
+                updateDoc(doc(db, "docs", docItem.id), {
+                    folder: null,
+                });
+            } catch (e) {}
+        });
+        if (folderActive === item.id) onclickFolder(null);
+    };
 
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
             <div
-                className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === null ? 'bg-gray-300' : ''}`}
+                className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
+                    folderActive === null ? "bg-gray-300" : ""
+                }`}
                 onClick={() => {
-                    onclickFolder(null)
+                    onclickFolder(null);
                 }}
             >
                 <div>Main</div>
             </div>
             {items.map((item, index) => {
+                if (isDisplay) {
+                    return (
+                        <div
+                            onClick={() => {
+                                onclickFolder(item.id);
+                            }}
+                            ref={
+                                index === items.length - 1
+                                    ? lastItemRef
+                                    : undefined
+                            }
+                            className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
+                                folderActive === item.id ? "bg-gray-300" : ""
+                            }`}
+                        >
+                            <div>{item.name}</div>
+                        </div>
+                    );
+                }
                 return (
                     <Popover
                         content={
                             <div>
-                                <Button onClick={() => {
-
-                                }}>
-                                    Rename
+                                <Button
+                                    onClick={() => {
+                                        onEditFolder(item);
+                                    }}
+                                >
+                                    Edit
                                 </Button>
-                                <Button onClick={() => {
-                                    onDeleteFolder(item)
-                                }}>
+                                <Button
+                                    onClick={() => {
+                                        onDeleteFolder(item);
+                                    }}
+                                >
                                     Delete
                                 </Button>
                             </div>
@@ -146,12 +192,16 @@ const ListDocsFolders = (props) => {
                     >
                         <div
                             onClick={() => {
-                                onclickFolder(item.id)
+                                onclickFolder(item.id);
                             }}
                             ref={
-                                index === items.length - 1 ? lastItemRef : undefined
+                                index === items.length - 1
+                                    ? lastItemRef
+                                    : undefined
                             }
-                            className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${folderActive === item.id ? 'bg-gray-300' : ''}`}
+                            className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
+                                folderActive === item.id ? "bg-gray-300" : ""
+                            }`}
                         >
                             <div>{item.name}</div>
                         </div>
