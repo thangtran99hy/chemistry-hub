@@ -1,7 +1,10 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import { Form, Input, Upload, Button, notification } from "antd";
 import { v4 as uuidv4 } from "uuid";
-import {extractVideoId, getFileExtension} from "../../../../../utils/functions";
+import {
+    extractVideoId,
+    getFileExtension,
+} from "../../../../../utils/functions";
 import {
     getFirestore,
     collection,
@@ -12,9 +15,9 @@ import {
 } from "firebase/firestore";
 import { AuthContext } from "../../../../../providers/AuthProvider";
 import { DRIVE_DIR } from "../../../../../utils/constants";
-import YouTube from 'react-youtube';
+import YouTube from "react-youtube";
 
-const AddVideo = (props) => {
+const FormVideo = (props) => {
     const { onForceUpdate, folderActive } = props;
     const [form] = Form.useForm();
     const { authUser, dataUser } = useContext(AuthContext);
@@ -38,7 +41,7 @@ const AddVideo = (props) => {
             title,
             description: description ?? "",
             timestamp: serverTimestamp(),
-            folder: folderActive
+            folder: folderActive,
         })
             .then((res) => {
                 form.resetFields();
@@ -65,23 +68,29 @@ const AddVideo = (props) => {
                         },
                     ]}
                 >
-                    <Input onChange={(e) => {
-                        console.log(e.target.value)
-                        setYouTubeId(extractVideoId(e.target.value))
-                    }} />
+                    <Input
+                        onChange={(e) => {
+                            console.log(e.target.value);
+                            setYouTubeId(extractVideoId(e.target.value));
+                        }}
+                    />
                 </Form.Item>
                 <div>
-                    {youtubeId &&
+                    {youtubeId && (
                         <>
-                        <div>YoutubeId : <span>{youtubeId}</span></div>
-                    <div>
-                        <div className="flex flex-col">
-                            <div>Preview</div>
-                            <div className="w-full">
-                                <YouTube videoId={youtubeId} />
+                            <div>
+                                YoutubeId : <span>{youtubeId}</span>
                             </div>
-                        </div>
-                    </div></>}
+                            <div>
+                                <div className="flex flex-col">
+                                    <div>Preview</div>
+                                    <div className="w-full">
+                                        <YouTube videoId={youtubeId} />
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
                 <Form.Item
                     name="title"
@@ -109,4 +118,4 @@ const AddVideo = (props) => {
     );
 };
 
-export default AddVideo;
+export default FormVideo;

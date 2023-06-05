@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Form, Input, Upload, Button, notification, Select } from "antd";
+import {
+    Form,
+    Input,
+    Upload,
+    Button,
+    notification,
+    Select,
+    Checkbox,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
@@ -52,6 +60,7 @@ const FormDocs = (props) => {
                 title: data.title,
                 description: data.description,
                 folder: data.folder,
+                isHide: !!data.isHide,
             });
         } else {
             form.setFieldsValue({
@@ -62,9 +71,7 @@ const FormDocs = (props) => {
     }, []);
 
     const onFinish = async (values) => {
-        const { file, title, description, folder } = values;
-        // console.log("file", file);
-        // return;
+        const { file, title, description, folder, isHide } = values;
         const db = getFirestore();
 
         if (!file?.file) {
@@ -72,6 +79,7 @@ const FormDocs = (props) => {
                 title,
                 description: description ?? "",
                 folder: folder ?? null,
+                isHide: !!isHide,
             })
                 .then((res) => {
                     form.resetFields();
@@ -95,6 +103,7 @@ const FormDocs = (props) => {
                         description: description ?? "",
                         docPath: resUpload.docPath,
                         folder: folder ?? null,
+                        isHide: !!isHide,
                     })
                         .then((res) => {
                             form.resetFields();
@@ -117,6 +126,7 @@ const FormDocs = (props) => {
                     timestamp: serverTimestamp(),
                     docPath: resUpload.docPath,
                     folder: folder ?? null,
+                    isHide: !!isHide,
                 })
                     .then((res) => {
                         form.resetFields();
@@ -233,7 +243,9 @@ const FormDocs = (props) => {
                 <Form.Item name="description" label="Description">
                     <Input.TextArea />
                 </Form.Item>
-
+                <Form.Item name="isHide" valuePropName="checked">
+                    <Checkbox>Hide</Checkbox>
+                </Form.Item>
                 <Form.Item>
                     <Button htmlType="submit">Submit</Button>
                 </Form.Item>

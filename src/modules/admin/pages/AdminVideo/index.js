@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
-import AddVideo from "./components/AddVideo";
+import AddVideo from "./components/FormVideo";
 import ListVideo from "./components/ListVideo";
 import { Button, Modal } from "antd";
-import AddVideoFolder from "./components/AddVideoFolder";
-// IoAddCircle
+import AddVideoFolder from "./components/FormVideoFolder";
 import { HiFolderAdd } from "react-icons/hi";
 import ListVideoFolders from "./components/ListVideoFolders";
-const MODAL_ADD_FILE = 'add_file';
-const MODAL_ADD_FOLDER = 'add_folder';
+const MODAL_ADD_VIDEO = "add_video";
+const MODAL_EDIT_VIDEO = "edit_video";
+const MODAL_ADD_FOLDER = "add_folder";
+const MODAL_EDIT_FOLDER = "edit_folder";
 const AdminVideo = (props) => {
-    const [isModalAdd, setIsModalAdd] = useState(null);
+    const [modalType, setModalType] = useState(null);
     const [forceUpdate, setForceUpdate] = useState(null);
     const [folderActive, setFolderActive] = useState(null);
+    const [folderEditting, setFolderEditting] = useState(null);
+    const [videoEditting, setVideoEditing] = useState(null);
     useEffect(() => {
         if (forceUpdate) {
             setForceUpdate(null);
@@ -21,57 +24,77 @@ const AdminVideo = (props) => {
         <div className="flex items-start h-full">
             <div className="w-[150px] pr-2 border-r border-r-gray-200 h-full">
                 <div className="flex items-center justify-between py-1">
-                    <div>
-                        Folders
-                    </div>
-                    <Button  icon={<HiFolderAdd />} onClick={() => setIsModalAdd(MODAL_ADD_FOLDER)} />
+                    <div>Folders</div>
+                    <Button
+                        icon={<HiFolderAdd />}
+                        onClick={() => setModalType(MODAL_ADD_FOLDER)}
+                    />
                 </div>
-                <ListVideoFolders forceUpdate={forceUpdate === MODAL_ADD_FOLDER} onclickFolder={(id) => {
-                    setFolderActive(id)
-                }}
-                                  folderActive={folderActive}
+                <ListVideoFolders
+                    forceUpdate={
+                        forceUpdate === MODAL_ADD_FOLDER ||
+                        forceUpdate === MODAL_EDIT_FOLDER
+                    }
+                    onclickFolder={(id) => {
+                        setFolderActive(id);
+                    }}
+                    folderActive={folderActive}
+                    onEditFolder={(item) => {
+                        setModalType(MODAL_EDIT_FOLDER);
+                        setFolderEditting(item);
+                    }}
                 />
             </div>
             <div className="px-2 flex-1 h-full">
-                <Button onClick={() => setIsModalAdd(MODAL_ADD_FILE)}>
+                <Button onClick={() => setModalType(MODAL_ADD_VIDEO)}>
                     Thêm mới video
                 </Button>
-                <ListVideo forceUpdate={forceUpdate === MODAL_ADD_FILE} folderActive={folderActive}/>
+                <ListVideo
+                    forceUpdate={
+                        forceUpdate === MODAL_ADD_VIDEO ||
+                        forceUpdate === MODAL_EDIT_VIDEO
+                    }
+                    folderActive={folderActive}
+                    onEditDoc={(item) => {
+                        setModalType(MODAL_EDIT_VIDEO);
+                        setVideoEditing(item);
+                    }}
+                />
             </div>
-            {isModalAdd && (
+            {modalType && (
                 <Modal
-                    open={!!isModalAdd}
+                    open={!!modalType}
                     onClose={() => {
-                        setIsModalAdd(null);
+                        setModalType(null);
                     }}
                     onCancel={() => {
-                        setIsModalAdd(null);
+                        setModalType(null);
                     }}
                     footer={null}
                 >
-                    {
-                        isModalAdd === MODAL_ADD_FILE
-                            ?
-                            <AddVideo
-                                onForceUpdate={() => {
-                                    setForceUpdate(MODAL_ADD_FILE);
-                                    setIsModalAdd(null);
-                                }}
-                                folderActive={folderActive}
-                            />
-                            :
-                            isModalAdd === MODAL_ADD_FOLDER
-                                ?
-                                <AddVideoFolder
-                                    onForceUpdate={() => {
-                                        setForceUpdate(MODAL_ADD_FOLDER);
-                                        setIsModalAdd(null);
-                                    }}
-                                    folderActive={folderActive}
-                                />
-                                :
-                                <></>
-                    }
+                    {modalType === MODAL_ADD_VIDEO ||
+                    (modalType === MODAL_EDIT_VIDEO && videoEditting) ? (
+                        <AddVideo
+                            onForceUpdate={() => {
+                                setForceUpdate(modalType);
+                                setModalType(null);
+                            }}
+                            folderActive={folderActive}
+                            data={videoEditting}
+                        />
+                    ) : modalType === MODAL_ADD_FOLDER ||
+                      (modalType === MODAL_EDIT_FOLDER && folderEditting) ? (
+                        <AddVideoFolder
+                            onForceUpdate={() => {
+                                setForceUpdate(modalType);
+                                setModalType(null);
+                            }}
+                            folderActive={folderActive}
+                            data={folderEditting}
+                        />
+                    ) : (
+                        <></>
+                    )}
                 </Modal>
             )}
         </div>

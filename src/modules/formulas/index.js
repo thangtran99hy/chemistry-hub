@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { delay } from "../../utils/functions";
-import { Input } from "antd";
+import { Input, Spin } from "antd";
 import _ from "lodash";
 
 const pageSize = 20;
@@ -105,7 +105,7 @@ const Formulas = (props) => {
     };
 
     return (
-        <div className="p-2 flex-1 w-full flex flex-col h-full">
+        <div className="p-2 flex-1 w-full flex flex-col h-full overflow-hidden">
             <div className="p-2 pt-0">
                 <Input.Search
                     placeholder="Enter your search query"
@@ -142,13 +142,8 @@ const Formulas = (props) => {
                     );
                 })}
                 {loading && (
-                    <div role="status" className="animate-pulse">
-                        <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
-                        <div className="flex items-center justify-start mt-4">
-                            <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
-                            <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                        </div>
-                        <span className="sr-only">Loading...</span>
+                    <div className="flex justify-center items-center p-2">
+                        <Spin />
                     </div>
                 )}
             </div>

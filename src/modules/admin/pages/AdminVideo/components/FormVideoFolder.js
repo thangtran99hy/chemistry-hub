@@ -15,7 +15,7 @@ import {
 import { AuthContext } from "../../../../../providers/AuthProvider";
 import { DRIVE_DIR } from "../../../../../utils/constants";
 
-const AddVideoFolder = (props) => {
+const FormVideoFolder = (props) => {
     const { onForceUpdate } = props;
     const [form] = Form.useForm();
     const { authUser, dataUser } = useContext(AuthContext);
@@ -25,7 +25,7 @@ const AddVideoFolder = (props) => {
         const { name } = values;
         try {
             const db = getFirestore();
-            const folderId = uuidv4()
+            const folderId = uuidv4();
             setDoc(doc(db, "videoFolders", folderId), {
                 uid: authUser.uid,
                 firstName: dataUser.firstName,
@@ -75,4 +75,4 @@ const AddVideoFolder = (props) => {
     );
 };
 
-export default AddVideoFolder;
+export default FormVideoFolder;

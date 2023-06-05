@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     doc,
-    getDoc,
     getFirestore,
     collection,
     query,
@@ -13,7 +12,6 @@ import {
     deleteDoc,
     updateDoc,
 } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
 import { Button, Popover } from "antd";
 import { FaEllipsisV } from "react-icons/fa";
 
