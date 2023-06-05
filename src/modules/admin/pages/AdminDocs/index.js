@@ -29,7 +29,7 @@ const AdminDocs = (props) => {
     }, [modalType]);
     return (
         <div className="flex items-start h-full">
-            <div className="w-[150px] pr-2 border-r border-r-gray-200 h-full">
+            <div className="w-[180px] pr-2 border-r border-r-gray-200 h-full">
                 <div className="flex items-center justify-between py-1">
                     <div>Folders</div>
                     <Button

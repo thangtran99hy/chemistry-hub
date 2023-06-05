@@ -12,6 +12,7 @@ import {
     deleteDoc,
 } from "firebase/firestore";
 import { MdSimCardDownload } from "react-icons/md";
+import { FaEllipsisV } from "react-icons/fa";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import TypeDocIcon from "./../../../../../assets/file_docs.svg";
 import TypePdfIcon from "./../../../../../assets/file_pdf.svg";
@@ -23,6 +24,7 @@ import {
     getFileExtension,
     handleDownload,
 } from "../../../../../utils/functions";
+import { isDate } from "lodash";
 const pageSize = 10;
 const ListDocs = (props) => {
     const { forceUpdate, folderActive, onEditDoc, isDisplay } = props;
@@ -181,59 +183,71 @@ const ListDocs = (props) => {
                 >
                     <img src={showDocTypeIcon(item)} />
                     <div className="text-sm">{item.title}</div>
-                    <div className="py-1 flex justify-end">
-                        <div
-                            className="cursor-pointer"
-                            onClick={() => onDownloadDoc(item)}
-                        >
-                            <MdSimCardDownload className="text-2xl" />
-                        </div>
-                    </div>
                     <div className="flex items-center mt-2">
-                        <div className="font-bold mr-2 text-xs">
-                            {item.firstName} {item.lastName}
+                        <div className="flex-1 flex items-center">
+                            <div className="font-bold mr-2 text-xs">
+                                {item.firstName} {item.lastName}
+                            </div>
+                            <div className="italic text-xs">
+                                {item.timestamp?.seconds
+                                    ? moment
+                                          .unix(item.timestamp.seconds)
+                                          .calendar()
+                                    : ""}
+                            </div>
                         </div>
-                        <div className="italic text-xs">
-                            {item.timestamp?.seconds
-                                ? moment.unix(item.timestamp.seconds).calendar()
-                                : ""}
-                        </div>
+                        <Popover
+                            content={
+                                <div className="flex flex-col items-center">
+                                    {!isDisplay && (
+                                        <>
+                                            <Button
+                                                className="my-1 w-full"
+                                                onClick={() => {
+                                                    onEditDoc(item);
+                                                }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                className="my-1 w-full"
+                                                onClick={() => {
+                                                    onDeleteDoc(item);
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </>
+                                    )}
+                                    <Button
+                                        className="my-1 w-full"
+                                        onClick={() => onDownloadDoc(item)}
+                                    >
+                                        Download
+                                    </Button>
+                                </div>
+                            }
+                            // trigger="click"
+                        >
+                            <div className="cursor-pointer">
+                                <FaEllipsisV className="text-sm" />
+                            </div>
+                        </Popover>
                     </div>
                 </div>
             </Col>
         );
     };
     return (
-        <div className="p-2 flex-1 w-full overflow-y-auto">
+        <div
+            className="p-2 flex-1 w-full overflow-y-auto"
+            style={{
+                height: "calc(100% - 50px)",
+            }}
+        >
             <Row>
                 {items.map((item, index) => {
-                    if (isDisplay) {
-                        return showDocItem(item, index);
-                    }
-                    return (
-                        <Popover
-                            content={
-                                <div>
-                                    <Button
-                                        onClick={() => {
-                                            onEditDoc(item);
-                                        }}
-                                    >
-                                        Edit
-                                    </Button>
-                                    <Button
-                                        onClick={() => {
-                                            onDeleteDoc(item);
-                                        }}
-                                    >
-                                        Delete
-                                    </Button>
-                                </div>
-                            }
-                        >
-                            {showDocItem(item, index)}
-                        </Popover>
-                    );
+                    return showDocItem(item, index);
                 })}
 
                 {loading && (

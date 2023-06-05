@@ -15,6 +15,8 @@ import {
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { Button, Popover } from "antd";
+import { FaEllipsisV } from "react-icons/fa";
+
 const pageSize = 20;
 const ListDocsFolders = (props) => {
     const {
@@ -138,7 +140,12 @@ const ListDocsFolders = (props) => {
     };
 
     return (
-        <div className="p-2 flex-1 w-full overflow-y-auto">
+        <div
+            className="p-2 flex-1 w-full overflow-y-auto"
+            style={{
+                height: "calc(100% - 50px)",
+            }}
+        >
             <div
                 className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
                     folderActive === null ? "bg-gray-300" : ""
@@ -147,65 +154,59 @@ const ListDocsFolders = (props) => {
                     onclickFolder(null);
                 }}
             >
-                <div>Main</div>
+                <div className="text-sm">Main</div>
             </div>
             {items.map((item, index) => {
-                if (isDisplay) {
-                    return (
-                        <div
-                            onClick={() => {
-                                onclickFolder(item.id);
-                            }}
-                            ref={
-                                index === items.length - 1
-                                    ? lastItemRef
-                                    : undefined
-                            }
-                            className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
-                                folderActive === item.id ? "bg-gray-300" : ""
-                            }`}
-                        >
-                            <div>{item.name}</div>
-                        </div>
-                    );
-                }
                 return (
-                    <Popover
-                        content={
-                            <div>
-                                <Button
-                                    onClick={() => {
-                                        onEditFolder(item);
-                                    }}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    onClick={() => {
-                                        onDeleteFolder(item);
-                                    }}
-                                >
-                                    Delete
-                                </Button>
-                            </div>
+                    <div
+                        onClick={() => {
+                            onclickFolder(item.id);
+                        }}
+                        ref={
+                            index === items.length - 1 ? lastItemRef : undefined
                         }
+                        className={`flex items-center my-2 p-1 border-b hover:bg-gray-300 cursor-pointer ${
+                            folderActive === item.id ? "bg-gray-300" : ""
+                        }`}
                     >
-                        <div
-                            onClick={() => {
-                                onclickFolder(item.id);
-                            }}
-                            ref={
-                                index === items.length - 1
-                                    ? lastItemRef
-                                    : undefined
-                            }
-                            className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
-                                folderActive === item.id ? "bg-gray-300" : ""
-                            }`}
-                        >
-                            <div>{item.name}</div>
-                        </div>
-                    </Popover>
+                        <div className="flex-1 text-sm">{item.name}</div>
+                        {!isDisplay && (
+                            <Popover
+                                content={
+                                    <div className="flex flex-col items-center">
+                                        <Button
+                                            className="my-1 w-full"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                onEditFolder(item);
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            className="my-1 w-full"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                onDeleteFolder(item);
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                }
+                                // trigger="click"
+                            >
+                                <div
+                                    className="cursor-pointer"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                    }}
+                                >
+                                    <FaEllipsisV className="text-xs" />
+                                </div>
+                            </Popover>
+                        )}
+                    </div>
                 );
             })}
             {loading && (
