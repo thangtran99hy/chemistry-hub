@@ -5,7 +5,7 @@ import { SiReadthedocs } from "react-icons/si";
 import { MdOutlineForum } from "react-icons/md";
 import { AiOutlineVideoCamera, AiOutlineFileSearch } from "react-icons/ai";
 import { HiAcademicCap } from "react-icons/hi";
-import { NavLink, useLocation } from "react-router-dom";
+import {NavLink, useLocation, useMatch} from "react-router-dom";
 const AdminSidebar = (props) => {
     const location = useLocation();
 
@@ -26,6 +26,10 @@ const AdminSidebar = (props) => {
             text: "Kiểm tra",
         },
     ];
+
+    const match = useMatch(links.PATH_ADMIN_TAKE_TEST);
+    const isAdminTakeList = match?.pathname === location.pathname;
+    console.log(isAdminTakeList)
     return (
         <div className="flex items-center border-b border-b-gray-200 p-2">
             <NavLink to={links.PATH_ADMIN} className="py-1 px-5 font-bold">
@@ -36,7 +40,7 @@ const AdminSidebar = (props) => {
                     <NavLink
                         to={menuItem.path}
                         className={`flex items-center mx-1 p-2 ${
-                            menuItem.path === location.pathname
+                            (menuItem.path === location.pathname || (menuItem.path === links.PATH_ADMIN_TEST && isAdminTakeList))
                                 ? "bg-gray-200"
                                 : ""
                         }`}

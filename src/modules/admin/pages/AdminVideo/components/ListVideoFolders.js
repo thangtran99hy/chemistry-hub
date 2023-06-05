@@ -9,22 +9,19 @@ import {
     getDocs,
     orderBy,
     limit,
-    startAfter,
+    startAfter, deleteDoc, updateDoc,
 } from "firebase/firestore";
-import { GrDocumentDownload } from "react-icons/gr";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
-import { useNavigate } from "react-router-dom";
-import moment from "moment";
-import { Button } from "antd";
-import {
-    getFileExtension,
-    handleDownload,
-} from "../../../../../utils/functions";
+import {Button, Popover, Spin} from "antd";
+import {FaEllipsisV} from "react-icons/fa";
 const pageSize = 20;
 const ListVideoFolders = (props) => {
-    const { forceUpdate, onclickFolder, folderActive } = props;
-    const navigate = useNavigate();
+    const {
+        forceUpdate,
+        onclickFolder,
+        folderActive,
+        onEditFolder,
+        isDisplay,
+    } = props;
     const [data, setData] = useState({
         items: [],
         page: 0,
@@ -115,8 +112,37 @@ const ListVideoFolders = (props) => {
         }));
     };
 
+    const onDeleteFolder = async (item) => {
+        const db = getFirestore();
+        await deleteDoc(doc(db, "videoFolders", item.id));
+        setData((prev) => ({
+            ...prev,
+            items: items.filter((itemP) => itemP.id !== item.id),
+        }));
+        await moveVideoInFolderToMain(item);
+    };
+
+    const moveVideoInFolderToMain = async (item) => {
+        const db = getFirestore();
+        const q = query(collection(db, "video"), where("folder", "==", item.id));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((docItem, index) => {
+            try {
+                updateDoc(doc(db, "video", docItem.id), {
+                    folder: null,
+                });
+            } catch (e) {}
+        });
+        if (folderActive === item.id) onclickFolder(null);
+    };
+
     return (
-        <div className="p-2 flex-1 w-full overflow-y-auto">
+        <div
+            className="p-2 flex-1 w-full overflow-y-auto"
+            style={{
+                height: "calc(100% - 50px)",
+            }}
+        >
             <div
                 className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
                     folderActive === null ? "bg-gray-300" : ""
@@ -125,7 +151,7 @@ const ListVideoFolders = (props) => {
                     onclickFolder(null);
                 }}
             >
-                <div>Main</div>
+                <div className="text-sm">Main</div>
             </div>
             {items.map((item, index) => {
                 return (
@@ -136,23 +162,52 @@ const ListVideoFolders = (props) => {
                         ref={
                             index === items.length - 1 ? lastItemRef : undefined
                         }
-                        className={`my-2 p-2 border-b hover:bg-gray-300 cursor-pointer ${
+                        className={`flex items-center my-2 p-1 border-b hover:bg-gray-300 cursor-pointer ${
                             folderActive === item.id ? "bg-gray-300" : ""
                         }`}
                     >
-                        <div>{item.name}</div>
+                        <div className="flex-1 text-sm">{item.name}</div>
+                        {!isDisplay && (
+                            <Popover
+                                content={
+                                    <div className="flex flex-col items-center">
+                                        <Button
+                                            className="my-1 w-full"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                onEditFolder(item);
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            className="my-1 w-full"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                onDeleteFolder(item);
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                }
+                                // trigger="click"
+                            >
+                                <div
+                                    className="cursor-pointer"
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                    }}
+                                >
+                                    <FaEllipsisV className="text-xs" />
+                                </div>
+                            </Popover>
+                        )}
                     </div>
                 );
             })}
             {loading && (
-                <div role="status" className="animate-pulse">
-                    <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
-                    <div className="flex items-center justify-start mt-4">
-                        <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                    </div>
-                    <span className="sr-only">Loading...</span>
-                </div>
+                <Spin />
             )}
         </div>
     );

@@ -12,6 +12,7 @@ import AdminDocs from "../modules/admin/pages/AdminDocs";
 import AdminVideo from "../modules/admin/pages/AdminVideo";
 import AdminTest from "../modules/admin/pages/AdminTest";
 import TakeTest from "../modules/test/components/TakeTest";
+import TakeTestList from "../modules/admin/pages/AdminTest/components/TakeTestList";
 export const mainRoutes = [
     {
         component: Home,
@@ -74,6 +75,12 @@ export const mainRoutes = [
     {
         component: AdminTest,
         path: links.PATH_ADMIN_TEST,
+        isExact: true,
+        isAdmin: true,
+    },
+    {
+        component: TakeTestList,
+        path: links.PATH_ADMIN_TAKE_TEST,
         isExact: true,
         isAdmin: true,
     },

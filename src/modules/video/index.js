@@ -13,12 +13,14 @@ const Video = (props) => {
                         setFolderActive(id);
                     }}
                     folderActive={folderActive}
+                    isDisplay={true}
                 />
             </div>
             <div className="px-2 flex-1 h-full">
                 <ListVideo
                     forceUpdate={forceUpdate}
                     folderActive={folderActive}
+                    isDisplay={true}
                 />
             </div>
         </div>

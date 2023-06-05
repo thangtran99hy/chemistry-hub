@@ -1,42 +1,53 @@
 import React, { useEffect, useState } from "react";
-import AddTest from "./components/AddTest";
+import FormTest from "./components/FormTest";
 import ListTest from "./components/ListTest";
 import { Button, Modal } from "antd";
 import PreviewTest from "./components/PreviewTest";
+const MODAL_ADD_TEST = "add_test";
+const MODAL_EDIT_TEST = "edit_test";
 const AdminTest = (props) => {
-    const [isModalAdd, setIsModalAdd] = useState(null);
+    const [modalType, setModalType] = useState(null);
     const [forceUpdate, setForceUpdate] = useState(null);
     const [folderActive, setFolderActive] = useState(null);
     const [testPreview, setTestPreview] = useState(null);
+    const[testEditing, setTestEditing] = useState(null)
     useEffect(() => {
         if (forceUpdate) {
             setForceUpdate(null);
         }
     }, [forceUpdate]);
     return (
-        <div className="flex items-start h-full">
-            <Button onClick={() => setIsModalAdd(true)}>
+        <div className="flex flex-col items-start h-full">
+            <Button onClick={() => setModalType(MODAL_ADD_TEST)}>
                 Thêm mới bài test
             </Button>
-            <ListTest forceUpdate={forceUpdate} onClickItem={(item) => setTestPreview(item)}/>
-            {isModalAdd && (
+            <ListTest
+                forceUpdate={forceUpdate}
+                onClickItem={(item) => setTestPreview(item)}
+                onEditDoc={(item) => {
+                    setTestEditing(item);
+                    setModalType(MODAL_EDIT_TEST)
+                }}
+            />
+            {modalType && (
                 <Modal
-                    open={!!isModalAdd}
+                    open={!!modalType}
                     onClose={() => {
-                        setIsModalAdd(null);
+                        setModalType(null);
                     }}
                     onCancel={() => {
-                        setIsModalAdd(null);
+                        setModalType(null);
                     }}
                     footer={null}
                     className="w-[100vw] h-[100vh top-0 bottom-0 left-0 right-0 addTestModal"
                 >
-                    <AddTest
+                    <FormTest
                         onForceUpdate={() => {
                             setForceUpdate(true);
-                            setIsModalAdd(null);
+                            setModalType(null);
                         }}
                         folderActive={folderActive}
+                        data={testEditing}
                     />
                 </Modal>
             )}
@@ -50,6 +61,7 @@ const AdminTest = (props) => {
                         setTestPreview(null);
                     }}
                     footer={null}
+                    className="w-[100vw] h-[100vh top-0 bottom-0 left-0 right-0 previewTestModal"
                 >
                     <PreviewTest testPreview={testPreview} />
                 </Modal>

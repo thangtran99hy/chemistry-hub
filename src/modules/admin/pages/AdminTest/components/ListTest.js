@@ -9,21 +9,17 @@ import {
     getDocs,
     orderBy,
     limit,
-    startAfter,
+    startAfter, deleteDoc,
 } from "firebase/firestore";
-import { GrDocumentDownload } from "react-icons/gr";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { Button } from "antd";
-import {
-    getFileExtension,
-    handleDownload,
-} from "../../../../../utils/functions";
+import {Button, Col, Popover, Row} from "antd";
+import {FaEllipsisV} from "react-icons/fa";
+import {FiUsers} from "react-icons/fi";
+import * as links from "./../../../../../routes/links"
 const pageSize = 10;
 const ListTest = (props) => {
-    const { forceUpdate, folderActive, onClickItem } = props;
+    const { forceUpdate, folderActive, onClickItem,isDisplay,onEditDoc } = props;
     const navigate = useNavigate();
     const [data, setData] = useState({
         items: [],
@@ -92,13 +88,26 @@ const ListTest = (props) => {
         }));
         const db = getFirestore();
         const q = lastDoc
-            ? query(
+            ? isDisplay ? query(
+                collection(db, "test"),
+                where("isHide", "!=", true),
+                orderBy("isHide", "asc"),
+                orderBy("timestamp", "desc"),
+                limit(pageSize),
+                startAfter(lastDoc)
+            ) : query(
                 collection(db, "test"),
                 orderBy("timestamp", "desc"),
                 limit(pageSize),
                 startAfter(lastDoc)
             )
-            : query(
+            : isDisplay ? query(
+                collection(db, "test"),
+                where("isHide", "!=", true),
+                orderBy("isHide", "asc"),
+                orderBy("timestamp", "desc"),
+                limit(pageSize)
+            ) : query(
                 collection(db, "test"),
                 orderBy("timestamp", "desc"),
                 limit(pageSize)
@@ -127,17 +136,32 @@ const ListTest = (props) => {
     };
 
 
-    console.log('items',items)
+    const onDeleteDoc = async (item) => {
+        const db = getFirestore();
+        await deleteDoc(doc(db, "test", item.id));
+        setData((prev) => ({
+            ...prev,
+            items: items.filter((itemP) => itemP.id !== item.id),
+        }));
+    };
 
+    const goToTakeList = (item) => {
+        navigate(links.PATH_ADMIN_TAKE_TEST.replace(':id', item.id))
+    }
+
+    console.log('items',items)
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
+            <Row>
             {items.map((item, index) => {
+                const takeUsers = Array.isArray(item.takeUsers) ? item.takeUsers : []
                 return (
+                    <Col xs={24} sm={24} md={12} lg={8} xl={6} className="p-2">
                     <div
                         ref={
                             index === items.length - 1 ? lastItemRef : undefined
                         }
-                        className="my-2 p-2 border-b hover:bg-gray-50"
+                        className="my-2 p-2 border rounded-xl hover:bg-gray-50 relative overflow-hidden"
                         onClick={() => onClickItem(item)}
                     >
                         <div className="flex">
@@ -147,8 +171,13 @@ const ListTest = (props) => {
                                     {item.data.description}
                                 </div>
                             </div>
+                            <div className="flex items-center">
+                                <div className="mr-1 font-bold text-xs">{takeUsers.length}</div>
+                                <FiUsers />
+                            </div>
                         </div>
                         <div className="flex items-center mt-2">
+                            <div className="flex-1 flex items-center">
                             <div className="font-bold mr-2 text-sm">
                                 {item.firstName} {item.lastName}
                             </div>
@@ -159,10 +188,65 @@ const ListTest = (props) => {
                                         .calendar()
                                     : ""}
                             </div>
+                            </div>
+                            {(!isDisplay) && <Popover
+                                content={
+                                    <div className="flex flex-col items-center">
+                                        {
+                                            takeUsers.length === 0
+                                            ?
+                                        <>
+                                            <Button
+                                                className="my-1 w-full"
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    onEditDoc(item);
+                                                }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                className="my-1 w-full"
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    onDeleteDoc(item);
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </>
+                                                :
+                                                <>
+                                                    <Button
+                                                        className="my-1 w-full"
+                                                        onClick={(event) => {
+                                                            event.stopPropagation();
+                                                            goToTakeList(item);
+                                                        }}
+                                                    >
+                                                        List take
+                                                    </Button>
+                                                </>
+                                        }
+                                    </div>
+                                }
+                                // trigger="click"
+                            >
+                                <div className="cursor-pointer z-10" onClick={(event) => {
+                                    event.stopPropagation();
+                                }}>
+                                    <FaEllipsisV className="text-sm" />
+                                </div>
+                            </Popover>}
                         </div>
+                        {!!item.isHide && (
+                            <div className="absolute top-0 bottom-0 left-0 right-0 bg-[#ffffff99]"></div>
+                        )}
                     </div>
+                    </Col>
                 );
             })}
+            </Row>
             {loading && (
                 <div role="status" className="animate-pulse">
                     <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>

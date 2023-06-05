@@ -6,13 +6,12 @@ import { MdOutlineForum } from "react-icons/md";
 import { AiOutlineVideoCamera, AiOutlineFileSearch } from "react-icons/ai";
 import { HiAcademicCap } from "react-icons/hi";
 import LogoIcon from "./../assets/logo.png";
-import { useLocation, NavLink } from "react-router-dom";
+import {useLocation, NavLink, useMatch} from "react-router-dom";
 import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 import { AuthContext } from "../providers/AuthProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "./../firebase";
 import { RiAdminLine } from "react-icons/ri";
-
 const Sidebar = (props) => {
     const { authUser, isAuthModal, dataUser, setAuthUser, setIsAuthModal } =
         useContext(AuthContext);
@@ -64,6 +63,10 @@ const Sidebar = (props) => {
         links.PATH_ADMIN_TEST,
         links.PATH_ADMIN_VIDEO,
     ];
+
+    const match = useMatch(links.PATH_ADMIN_TAKE_TEST);
+    const isAdminTakeList = match?.pathname === location.pathname;
+    // console.log(match)
     return (
         <div className="w-[200px] bg-[#2c3145] flex flex-col">
             <div className="p-2">
@@ -76,7 +79,7 @@ const Sidebar = (props) => {
                     const isActive =
                         location.pathname === menuItem.path ||
                         (menuItem.path === links.PATH_ADMIN &&
-                            listPathAdmin.includes(location.pathname));
+                            (listPathAdmin.includes(location.pathname)|| isAdminTakeList));
                     return (
                         <NavLink to={menuItem.path}>
                             <div

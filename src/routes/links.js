@@ -13,3 +13,4 @@ export const PATH_ADMIN_DOCS = "/admin/docs";
 export const PATH_ADMIN_VIDEO = "/admin/video";
 export const PATH_ADMIN_TEST = "/admin/test";
 
+export const PATH_ADMIN_TAKE_TEST = '/admin/test/:id'

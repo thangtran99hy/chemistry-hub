@@ -13,8 +13,8 @@ const AdminVideo = (props) => {
     const [modalType, setModalType] = useState(null);
     const [forceUpdate, setForceUpdate] = useState(null);
     const [folderActive, setFolderActive] = useState(null);
-    const [folderEditting, setFolderEditting] = useState(null);
-    const [videoEditting, setVideoEditing] = useState(null);
+    const [folderEditing, setFolderEditing] = useState(null);
+    const [videoEditing, setVideoEditing] = useState(null);
     useEffect(() => {
         if (forceUpdate) {
             setForceUpdate(null);
@@ -22,7 +22,7 @@ const AdminVideo = (props) => {
     }, [forceUpdate]);
     return (
         <div className="flex items-start h-full">
-            <div className="w-[150px] pr-2 border-r border-r-gray-200 h-full">
+            <div className="w-[180px] pr-2 border-r border-r-gray-200 h-full">
                 <div className="flex items-center justify-between py-1">
                     <div>Folders</div>
                     <Button
@@ -41,7 +41,7 @@ const AdminVideo = (props) => {
                     folderActive={folderActive}
                     onEditFolder={(item) => {
                         setModalType(MODAL_EDIT_FOLDER);
-                        setFolderEditting(item);
+                        setFolderEditing(item);
                     }}
                 />
             </div>
@@ -73,24 +73,24 @@ const AdminVideo = (props) => {
                     footer={null}
                 >
                     {modalType === MODAL_ADD_VIDEO ||
-                    (modalType === MODAL_EDIT_VIDEO && videoEditting) ? (
+                    (modalType === MODAL_EDIT_VIDEO && videoEditing) ? (
                         <AddVideo
                             onForceUpdate={() => {
                                 setForceUpdate(modalType);
                                 setModalType(null);
                             }}
                             folderActive={folderActive}
-                            data={videoEditting}
+                            data={videoEditing}
                         />
                     ) : modalType === MODAL_ADD_FOLDER ||
-                      (modalType === MODAL_EDIT_FOLDER && folderEditting) ? (
+                      (modalType === MODAL_EDIT_FOLDER && folderEditing) ? (
                         <AddVideoFolder
                             onForceUpdate={() => {
                                 setForceUpdate(modalType);
                                 setModalType(null);
                             }}
                             folderActive={folderActive}
-                            data={folderEditting}
+                            data={folderEditing}
                         />
                     ) : (
                         <></>

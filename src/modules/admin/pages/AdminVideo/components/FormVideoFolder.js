@@ -1,30 +1,43 @@
-import React, { useContext } from "react";
+import React, {useContext, useEffect} from "react";
 import { Form, Input, Upload, Button, notification } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
-import { getFileExtension } from "../../../../../utils/functions";
 import {
     getFirestore,
-    collection,
-    addDoc,
     doc,
     setDoc,
-    serverTimestamp,
+    serverTimestamp, updateDoc,
 } from "firebase/firestore";
 import { AuthContext } from "../../../../../providers/AuthProvider";
-import { DRIVE_DIR } from "../../../../../utils/constants";
 
 const FormVideoFolder = (props) => {
-    const { onForceUpdate } = props;
+    const { onForceUpdate, data } = props;
     const [form] = Form.useForm();
     const { authUser, dataUser } = useContext(AuthContext);
     const [api, contextHolder] = notification.useNotification();
 
+    useEffect(() => {
+        if (data) form.setFieldValue("name", data.name);
+    }, []);
     const onFinish = async (values) => {
         const { name } = values;
         try {
             const db = getFirestore();
+            if (data) {
+                updateDoc(doc(db, "videoFolders", data.id), {
+                    name,
+                })
+                    .then((res) => {
+                        form.resetFields();
+                        onForceUpdate();
+                    })
+                    .catch((err) => {
+                        api.warning({
+                            message: `Gặp lỗi khi thêm folder!`,
+                            placement: "topRight",
+                        });
+                    });
+                return;
+            }
             const folderId = uuidv4();
             setDoc(doc(db, "videoFolders", folderId), {
                 uid: authUser.uid,
@@ -52,7 +65,11 @@ const FormVideoFolder = (props) => {
     };
     return (
         <div>
-            <div className="text-2xl font-bold mb-1">Thêm mới một tài liệu</div>
+            <div className="text-2xl font-bold mb-1">
+                {data
+                    ? "Sửa một thư mục tài liệu"
+                    : "Thêm mới một thư mục tài liệu"}
+            </div>
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 <Form.Item
                     name="name"

@@ -9,22 +9,15 @@ import {
     getDocs,
     orderBy,
     limit,
-    startAfter,
+    startAfter, deleteDoc,
 } from "firebase/firestore";
-import { GrDocumentDownload } from "react-icons/gr";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { Col, Row } from "antd";
-import {
-    getFileExtension,
-    handleDownload,
-} from "../../../../../utils/functions";
+import {Button, Col, Popover, Row} from "antd";
+import {FaEllipsisV} from "react-icons/fa";
 const pageSize = 10;
 const ListVideo = (props) => {
-    const { forceUpdate, folderActive } = props;
-    const navigate = useNavigate();
+    const { forceUpdate, folderActive, onEditDoc, isDisplay } = props;
     const [data, setData] = useState({
         items: [],
         page: null,
@@ -93,19 +86,34 @@ const ListVideo = (props) => {
         const db = getFirestore();
         console.log(folderActive);
         const q = lastDoc
-            ? query(
+            ? isDisplay ? query(
                   collection(db, "video"),
                   where("folder", "==", folderActive),
+                    where("isHide", "!=", true),
+                    orderBy("isHide", "asc"),
                   orderBy("timestamp", "desc"),
                   limit(pageSize),
                   startAfter(lastDoc)
-              )
-            : query(
+              ) : query(
+                collection(db, "video"),
+                where("folder", "==", folderActive),
+                orderBy("timestamp", "desc"),
+                limit(pageSize),
+                startAfter(lastDoc)
+            )
+            : isDisplay ? query(
                   collection(db, "video"),
                   where("folder", "==", folderActive),
+                where("isHide", "!=", true),
+                orderBy("isHide", "asc"),
                   orderBy("timestamp", "desc"),
                   limit(pageSize)
-              );
+              ) : query(
+                collection(db, "video"),
+                where("folder", "==", folderActive),
+                orderBy("timestamp", "desc"),
+                limit(pageSize)
+            );
         const querySnapshot = await getDocs(q);
         let items = [];
         let lastDocTemp = null;
@@ -129,38 +137,83 @@ const ListVideo = (props) => {
         }));
     };
 
+    const onDeleteDoc = async (item) => {
+        const db = getFirestore();
+        await deleteDoc(doc(db, "video", item.id));
+        setData((prev) => ({
+            ...prev,
+            items: items.filter((itemP) => itemP.id !== item.id),
+        }));
+    };
+
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
             <Row>
                 {items.map((item, index) => {
                     return (
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} className="p-2">
                             <div
                                 ref={
                                     index === items.length - 1
                                         ? lastItemRef
                                         : undefined
                                 }
-                                className="my-2 p-2 border-b hover:bg-gray-50"
+                                className="my-2 pb-2 border rounded-xl hover:bg-gray-50 relative overflow-hidden"
                             >
                                 <div>
                                     <img
                                         src={`https://img.youtube.com/vi/${item.youtubeId}/maxresdefault.jpg`}
                                     />
                                 </div>
-                                <div className="text-sm">{item.title}</div>
-                                <div className="flex items-center mt-2">
-                                    <div className="font-bold mr-2 text-sm">
-                                        {item.firstName} {item.lastName}
-                                    </div>
-                                    <div className="italic text-xs">
-                                        {item.timestamp?.seconds
-                                            ? moment
-                                                  .unix(item.timestamp.seconds)
-                                                  .calendar()
-                                            : ""}
+                                <div className="p-2">
+                                    <div className="text-sm">{item.title}</div>
+                                    <div className="flex items-center mt-2">
+                                        <div className="flex-1 flex items-center">
+                                            <div className="font-bold mr-2 text-sm">
+                                                {item.firstName} {item.lastName}
+                                            </div>
+                                            <div className="italic text-xs">
+                                                {item.timestamp?.seconds
+                                                    ? moment
+                                                        .unix(item.timestamp.seconds)
+                                                        .calendar()
+                                                    : ""}
+                                            </div>
+                                        </div>
+                                        {!isDisplay && <div>
+                                            <Popover
+                                                content={
+                                                    <div className="flex flex-col items-center">
+                                                        <Button
+                                                            className="my-1 w-full"
+                                                            onClick={() => {
+                                                                onEditDoc(item);
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </Button>
+                                                        <Button
+                                                            className="my-1 w-full"
+                                                            onClick={() => {
+                                                                onDeleteDoc(item);
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </div>
+                                                }
+                                                // trigger="click"
+                                            >
+                                                <div className="cursor-pointer z-10">
+                                                    <FaEllipsisV className="text-sm" />
+                                                </div>
+                                            </Popover>
+                                        </div>}
                                     </div>
                                 </div>
+                                {!!item.isHide && (
+                                    <div className="absolute top-0 bottom-0 left-0 right-0 bg-[#ffffff99]"></div>
+                                )}
                             </div>
                         </Col>
                     );

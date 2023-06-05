@@ -3,15 +3,20 @@ import * as Survey from 'survey-react';
 import 'survey-react/survey.css';
 const PreviewTest = (props) => {
     const {
-        testPreview
+        testPreview,
+        data
     } = props;
     const onComplete = (survey) => {
         console.log(survey.data); // You can perform any further actions with the survey data here
     };
+    const surveyModel = new Survey.Model(testPreview.data);
+    if (data) {
+        surveyModel.data = data ?? {};
+    }
+    surveyModel.mode = 'display';
+
     return (
-        <div>
-            <Survey.Survey json={testPreview.data} onComplete={onComplete} />;
-        </div>
+        <Survey.Survey model={surveyModel}/>
     )
 }
 

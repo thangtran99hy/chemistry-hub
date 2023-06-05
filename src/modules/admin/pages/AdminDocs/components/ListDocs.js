@@ -24,7 +24,6 @@ import {
     getFileExtension,
     handleDownload,
 } from "../../../../../utils/functions";
-import { isDate } from "lodash";
 const pageSize = 10;
 const ListDocs = (props) => {
     const { forceUpdate, folderActive, onEditDoc, isDisplay } = props;

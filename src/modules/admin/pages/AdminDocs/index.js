@@ -13,8 +13,8 @@ const AdminDocs = (props) => {
     const [modalType, setModalType] = useState(null);
     const [forceUpdate, setForceUpdate] = useState(null);
     const [folderActive, setFolderActive] = useState(null);
-    const [folderEditting, setFolderEditting] = useState(null);
-    const [fileEditting, setFileEditing] = useState(null);
+    const [folderEditing, setFolderEditing] = useState(null);
+    const [fileEditing, setFileEditing] = useState(null);
     useEffect(() => {
         if (forceUpdate) {
             setForceUpdate(null);
@@ -23,7 +23,7 @@ const AdminDocs = (props) => {
 
     useEffect(() => {
         if (!modalType) {
-            setFolderEditting(null);
+            setFolderEditing(null);
             setFileEditing(null);
         }
     }, [modalType]);
@@ -48,7 +48,7 @@ const AdminDocs = (props) => {
                     folderActive={folderActive}
                     onEditFolder={(item) => {
                         setModalType(MODAL_EDIT_FOLDER);
-                        setFolderEditting(item);
+                        setFolderEditing(item);
                     }}
                 />
             </div>
@@ -80,24 +80,24 @@ const AdminDocs = (props) => {
                     footer={null}
                 >
                     {modalType === MODAL_ADD_DOC ||
-                    (modalType === MODAL_EDIT_DOC && fileEditting) ? (
+                    (modalType === MODAL_EDIT_DOC && fileEditing) ? (
                         <FormDocs
                             onForceUpdate={() => {
                                 setForceUpdate(modalType);
                                 setModalType(null);
                             }}
                             folderActive={folderActive}
-                            data={fileEditting}
+                            data={fileEditing}
                         />
                     ) : modalType === MODAL_ADD_FOLDER ||
-                      (modalType === MODAL_EDIT_FOLDER && folderEditting) ? (
+                      (modalType === MODAL_EDIT_FOLDER && folderEditing) ? (
                         <FormDocsFolder
                             onForceUpdate={() => {
                                 setForceUpdate(modalType);
                                 setModalType(null);
                             }}
                             folderActive={folderActive}
-                            data={folderEditting}
+                            data={folderEditing}
                         />
                     ) : (
                         <></>
