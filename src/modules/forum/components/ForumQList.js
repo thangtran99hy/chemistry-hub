@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {doc, getDoc, getFirestore, collection, query, where, getDocs, orderBy, limit, startAfter} from "firebase/firestore";
 import {useNavigate} from "react-router-dom";
 import moment from "moment";
+import {Spin} from "antd";
 const pageSize = 10;
 const ForumQList = (props) => {
     const {
@@ -110,14 +111,7 @@ const ForumQList = (props) => {
                 })
             }
             {
-                loading && <div role="status" className="animate-pulse">
-                    <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
-                    <div className="flex items-center justify-start mt-4">
-                        <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                    </div>
-                    <span className="sr-only">Loading...</span>
-                </div>
+                loading && <Spin />
             }
         </div>
     );

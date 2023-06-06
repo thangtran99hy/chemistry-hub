@@ -19,7 +19,7 @@ import TypePdfIcon from "./../../../../../assets/file_pdf.svg";
 import TypeXlsIcon from "./../../../../../assets/file_xls.svg";
 import TypePptIcon from "./../../../../../assets/file_ppt.svg";
 import moment from "moment";
-import { Button, Popover, Col, Row } from "antd";
+import {Button, Popover, Col, Row, Spin} from "antd";
 import {
     getFileExtension,
     handleDownload,
@@ -273,14 +273,7 @@ const ListDocs = (props) => {
 
                 {loading && (
                     <Col xs={24} sm={24} md={12} lg={8} xl={6}>
-                        <div role="status" className="animate-pulse">
-                            <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
-                            <div className="flex items-center justify-start mt-4">
-                                <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
-                                <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                            </div>
-                            <span className="sr-only">Loading...</span>
-                        </div>
+                        <Spin />
                     </Col>
                 )}
             </Row>

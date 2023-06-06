@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {
     doc,
     getDoc,
@@ -13,12 +13,15 @@ import {
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import {Button, Col, Popover, Row} from "antd";
+import {Button, Col, Popover, Row, Spin} from "antd";
 import {FaEllipsisV} from "react-icons/fa";
 import {FiUsers} from "react-icons/fi";
 import * as links from "./../../../../../routes/links"
+import {AuthContext} from "../../../../../providers/AuthProvider";
 const pageSize = 10;
 const ListTest = (props) => {
+    const { dataUser } =
+        useContext(AuthContext)
     const { forceUpdate, folderActive, onClickItem,isDisplay,onEditDoc } = props;
     const navigate = useNavigate();
     const [data, setData] = useState({
@@ -161,7 +164,7 @@ const ListTest = (props) => {
                         ref={
                             index === items.length - 1 ? lastItemRef : undefined
                         }
-                        className="my-2 p-2 border rounded-xl hover:bg-gray-50 relative overflow-hidden"
+                        className={`my-2 p-2 border rounded-xl relative overflow-hidden ${(isDisplay && takeUsers.includes(dataUser.uid)) ? 'bg-green-400' : 'hover:bg-gray-50'}`}
                         onClick={() => onClickItem(item)}
                     >
                         <div className="flex">
@@ -248,14 +251,7 @@ const ListTest = (props) => {
             })}
             </Row>
             {loading && (
-                <div role="status" className="animate-pulse">
-                    <div className="h-10 bg-gray-300 dark:bg-gray-700 max-w-[640px] mb-2.5"></div>
-                    <div className="flex items-center justify-start mt-4">
-                        <div className="w-20 h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 mr-3"></div>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                    </div>
-                    <span className="sr-only">Loading...</span>
-                </div>
+                <Spin />
             )}
         </div>
     );
