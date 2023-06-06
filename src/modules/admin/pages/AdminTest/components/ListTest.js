@@ -205,7 +205,7 @@ const ListTest = (props) => {
                                                     onEditDoc(item);
                                                 }}
                                             >
-                                                Edit
+                                                Sửa
                                             </Button>
                                             <Button
                                                 className="my-1 w-full"
@@ -214,7 +214,7 @@ const ListTest = (props) => {
                                                     onDeleteDoc(item);
                                                 }}
                                             >
-                                                Delete
+                                                Xóa
                                             </Button>
                                         </>
                                                 :
@@ -226,7 +226,7 @@ const ListTest = (props) => {
                                                             goToTakeList(item);
                                                         }}
                                                     >
-                                                        List take
+                                                        Danh sách bài làm
                                                     </Button>
                                                 </>
                                         }

@@ -34,7 +34,7 @@ const AddDocsFolder = (props) => {
                     })
                     .catch((err) => {
                         api.warning({
-                            message: `Gặp lỗi khi thêm folder!`,
+                            message: `Có lỗi xảy ra!`,
                             placement: "topRight",
                         });
                     });
@@ -54,13 +54,13 @@ const AddDocsFolder = (props) => {
                 })
                 .catch((err) => {
                     api.warning({
-                        message: `Gặp lỗi khi thêm folder!`,
+                        message: `Có lỗi xảy ra!`,
                         placement: "topRight",
                     });
                 });
         } catch (e) {
             api.warning({
-                message: `Gặp lỗi khi thêm folder!`,
+                message: `Có lỗi xảy ra!`,
                 placement: "topRight",
             });
         }
@@ -75,18 +75,18 @@ const AddDocsFolder = (props) => {
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 <Form.Item
                     name="name"
-                    label="Name"
+                    label="Tên"
                     rules={[
                         {
                             required: true,
-                            message: "Please enter a name",
+                            message: "Vui lòng nhập tên",
                         },
                     ]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit">Submit</Button>
+                    <Button htmlType="submit">Lưu</Button>
                 </Form.Item>
             </Form>
             {contextHolder}

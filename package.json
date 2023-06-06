@@ -20,6 +20,7 @@
         "react-scripts": "5.0.1",
         "react-youtube": "^10.1.0",
         "sass-loader": "^13.3.1",
+        "survey-creator-core": "^1.9.90",
         "survey-creator-react": "^1.9.90",
         "survey-react": "^1.9.90",
         "tailwindcss": "^3.3.2",

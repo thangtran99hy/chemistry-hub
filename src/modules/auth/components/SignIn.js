@@ -3,7 +3,6 @@ import {  signInWithEmailAndPassword   } from 'firebase/auth';
 import {auth} from "./../../../firebase";
 import {AuthContext} from "../../../providers/AuthProvider";
 import { Form, Input, Button } from 'antd';
-import { Link } from 'react-router-dom';
 const SignIn = (props) => {
     const { authUser, setAuthUser,isAuthModal,
         setIsAuthModal, } = useContext(AuthContext);
@@ -32,8 +31,8 @@ const SignIn = (props) => {
             <Form.Item
                 name="email"
                 rules={[
-                    { required: true, message: 'Please input your email!' },
-                    { type: 'email', message: 'Please enter a valid email address!' },
+                    { required: true, message: 'Vui lòng nhập email của bạn!' },
+                    { type: 'email', message: 'Vui lòng nhập địa chỉ email hợp lệ!' },
                 ]}
             >
                 <Input placeholder="Email" />
@@ -41,14 +40,14 @@ const SignIn = (props) => {
 
             <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Please input your password!' }]}
+                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu của bạn!' }]}
             >
-                <Input.Password placeholder="Password" />
+                <Input.Password placeholder="Mật khẩu" />
             </Form.Item>
 
             <Form.Item>
                 <Button htmlType="submit">
-                    Log in
+                    Đăng nhập
                 </Button>
             </Form.Item>
         </Form>

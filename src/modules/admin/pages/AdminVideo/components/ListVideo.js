@@ -189,7 +189,7 @@ const ListVideo = (props) => {
                                                                 onEditDoc(item);
                                                             }}
                                                         >
-                                                            Edit
+                                                            Sửa
                                                         </Button>
                                                         <Button
                                                             className="my-1 w-full"
@@ -197,7 +197,7 @@ const ListVideo = (props) => {
                                                                 onDeleteDoc(item);
                                                             }}
                                                         >
-                                                            Delete
+                                                            Xóa
                                                         </Button>
                                                     </div>
                                                 }

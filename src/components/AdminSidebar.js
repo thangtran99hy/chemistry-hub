@@ -1,9 +1,7 @@
 import React from "react";
 import * as links from "./../routes/links";
-
 import { SiReadthedocs } from "react-icons/si";
-import { MdOutlineForum } from "react-icons/md";
-import { AiOutlineVideoCamera, AiOutlineFileSearch } from "react-icons/ai";
+import { AiOutlineVideoCamera } from "react-icons/ai";
 import { HiAcademicCap } from "react-icons/hi";
 import {NavLink, useLocation, useMatch} from "react-router-dom";
 const AdminSidebar = (props) => {

@@ -178,7 +178,7 @@ const ListVideoFolders = (props) => {
                                                 onEditFolder(item);
                                             }}
                                         >
-                                            Edit
+                                            Sửa
                                         </Button>
                                         <Button
                                             className="my-1 w-full"
@@ -187,7 +187,7 @@ const ListVideoFolders = (props) => {
                                                 onDeleteFolder(item);
                                             }}
                                         >
-                                            Delete
+                                            Xóa
                                         </Button>
                                     </div>
                                 }

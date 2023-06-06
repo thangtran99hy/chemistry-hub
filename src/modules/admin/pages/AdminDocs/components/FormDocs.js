@@ -15,7 +15,6 @@ import {getFileExtension, handleDownload} from "../../../../../utils/functions";
 import {
     getFirestore,
     collection,
-    addDoc,
     doc,
     setDoc,
     serverTimestamp,
@@ -87,7 +86,7 @@ const FormDocs = (props) => {
                 })
                 .catch((err) => {
                     api.warning({
-                        message: `Gặp lỗi khi thêm folder!`,
+                        message: `Có lỗi xảy ra!`,
                         placement: "topRight",
                     });
                 });
@@ -111,7 +110,7 @@ const FormDocs = (props) => {
                         })
                         .catch((err) => {
                             api.warning({
-                                message: `Gặp lỗi khi thêm folder!`,
+                                message: `Có lỗi xảy ra!`,
                                 placement: "topRight",
                             });
                         });
@@ -134,19 +133,19 @@ const FormDocs = (props) => {
                     })
                     .catch((err) => {
                         api.warning({
-                            message: `Gặp lỗi khi tải file lên!`,
+                            message: `Có lỗi xảy ra!`,
                             placement: "topRight",
                         });
                     });
             } catch (e) {
                 api.warning({
-                    message: `Gặp lỗi khi tải file lên!`,
+                    message: `Có lỗi xảy ra!`,
                     placement: "topRight",
                 });
             }
         } else {
             api.warning({
-                message: `Gặp lỗi khi tải file lên!`,
+                message: `Có lỗi xảy ra!`,
                 placement: "topRight",
             });
         }
@@ -195,10 +194,14 @@ const FormDocs = (props) => {
     }
     return (
         <div>
-            <div className="text-2xl font-bold mb-1">Thêm mới một tài liệu</div>
+            <div className="text-2xl font-bold mb-1">
+                {data
+                    ? "Sửa một tài liệu"
+                    : "Thêm mới một tài liệu"}
+                </div>
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 {folders && (
-                    <Form.Item label="Select Option" name="folder">
+                    <Form.Item label="Chọn thư mục" name="folder">
                         <Select>
                             <Option value={null}>Main</Option>
                             {folders.map((item) => {
@@ -211,14 +214,14 @@ const FormDocs = (props) => {
                 )}
                 <Form.Item
                     name="file"
-                    label="Upload File"
+                    label="Tải file lên"
                     rules={
                         data
                             ? undefined
                             : [
                                   {
                                       required: true,
-                                      message: "Please upload a file",
+                                      message: "Vui lòng tải lên một tập tin",
                                   },
                               ]
                     }
@@ -227,7 +230,7 @@ const FormDocs = (props) => {
                         className="my-1"
                         onClick={() => onDownloadDoc()}
                     >
-                        Download
+                        Tải file
                     </Button>}
                     <Upload.Dragger
                         maxCount={1}
@@ -237,7 +240,7 @@ const FormDocs = (props) => {
                             <UploadOutlined />
                         </p>
                         <p className="ant-upload-text">
-                            Click or drag file to this area to upload
+                            Nhấp hoặc kéo tệp vào khu vực này để tải lên
                         </p>
                     </Upload.Dragger>
                 </Form.Item>
@@ -246,25 +249,25 @@ const FormDocs = (props) => {
 
                 <Form.Item
                     name="title"
-                    label="Title"
+                    label="Tiêu đề"
                     rules={[
                         {
                             required: true,
-                            message: "Please enter a title",
+                            message: "vui lòng nhập tiêu đề",
                         },
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="description" label="Description">
+                <Form.Item name="description" label="Mô tả">
                     <Input.TextArea />
                 </Form.Item>
                 <Form.Item name="isHide" valuePropName="checked">
-                    <Checkbox>Hide</Checkbox>
+                    <Checkbox>Ẩn</Checkbox>
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit">Submit</Button>
+                    <Button htmlType="submit">Lưu</Button>
                 </Form.Item>
             </Form>
             {contextHolder}

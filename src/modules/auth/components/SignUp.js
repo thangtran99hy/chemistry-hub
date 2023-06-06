@@ -55,23 +55,23 @@ const SignUp = (props) => {
         >
             <Form.Item
                 name="firstName"
-                rules={[{ required: true, message: 'Please enter your first name!' }]}
+                rules={[{ required: true, message: 'Vui lòng nhập tên của bạn!' }]}
             >
-                <Input placeholder="First Name" />
+                <Input placeholder="Tên" />
             </Form.Item>
 
             <Form.Item
                 name="lastName"
-                rules={[{ required: true, message: 'Please enter your last name!' }]}
+                rules={[{ required: true, message: 'Vui lòng nhập họ của bạn!' }]}
             >
-                <Input placeholder="Last Name" />
+                <Input placeholder="Họ" />
             </Form.Item>
 
             <Form.Item
                 name="email"
                 rules={[
-                    { required: true, message: 'Please enter your email!' },
-                    { type: 'email', message: 'Please enter a valid email address!' },
+                    { required: true, message: 'Vui lòng nhập email của bạn!' },
+                    { type: 'email', message: 'Vui lòng nhập địa chỉ email hợp lệ!' },
                 ]}
             >
                 <Input placeholder="Email" />
@@ -79,14 +79,14 @@ const SignUp = (props) => {
 
             <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Please enter your password!' }]}
+                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu của bạn!' }]}
             >
-                <Input.Password placeholder="Password" />
+                <Input.Password placeholder="Mật khẩu" />
             </Form.Item>
 
             <Form.Item>
                 <Button htmlType="submit">
-                    Sign Up
+                    Đăng ký
                 </Button>
             </Form.Item>
         </Form>

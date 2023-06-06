@@ -39,7 +39,7 @@ const ForumQAdd = (props) => {
     }
     return (
         <div className="p-2">
-            <div className="font-bold text-2xl mb-2">Ask a Question</div>
+            <div className="font-bold text-2xl mb-2">Đặt một câu hỏi</div>
             <EditorBoxSend
                 value={questionText}
                 onChange={(value) => {

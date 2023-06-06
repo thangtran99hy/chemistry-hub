@@ -4,7 +4,15 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import AuthContextProvider from "./providers/AuthProvider";
+import moment from "moment";
+import 'moment/locale/vi';
+import "survey-core/survey.i18n.js";
+import "survey-creator-core/survey-creator-core.i18n.js";
+import { localization } from "survey-creator-core";
 
+moment.locale('vi');
+
+localization.currentLocale = "vi";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <React.StrictMode>

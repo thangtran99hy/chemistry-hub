@@ -81,7 +81,7 @@ const TakeTest = (props) => {
             })
             .catch((err) => {
                 api.warning({
-                    message: `Gặp lỗi khi tải file lên!`,
+                    message: `Có lỗi xảy ra!`,
                     placement: "topRight",
                 });
             });

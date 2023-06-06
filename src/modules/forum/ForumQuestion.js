@@ -60,7 +60,7 @@ const ForumQuestion = (props) => {
                </div>
                <div className="p-1">
                    <div className="p-1">
-                       <div className="font-bold text-2xl mb-2">Discuss the question</div>
+                       <div className="font-bold text-2xl mb-2">Thảo luận về câu hỏi</div>
                        <ForumRAdd questionId={questionId} replyId={[]} onSuccess={() => {
                            setForceUpdate(true)
                        }}/>

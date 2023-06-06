@@ -32,7 +32,7 @@ const FormVideoFolder = (props) => {
                     })
                     .catch((err) => {
                         api.warning({
-                            message: `Gặp lỗi khi thêm folder!`,
+                            message: `Có lỗi xảy ra!`,
                             placement: "topRight",
                         });
                     });
@@ -52,13 +52,13 @@ const FormVideoFolder = (props) => {
                 })
                 .catch((err) => {
                     api.warning({
-                        message: `Gặp lỗi khi thêm folder!`,
+                        message: `Có lỗi xảy ra!`,
                         placement: "topRight",
                     });
                 });
         } catch (e) {
             api.warning({
-                message: `Gặp lỗi khi thêm folder!`,
+                message: `Có lỗi xảy ra!`,
                 placement: "topRight",
             });
         }
@@ -67,8 +67,8 @@ const FormVideoFolder = (props) => {
         <div>
             <div className="text-2xl font-bold mb-1">
                 {data
-                    ? "Sửa một thư mục tài liệu"
-                    : "Thêm mới một thư mục tài liệu"}
+                    ? "Sửa một thư mục video"
+                    : "Thêm mới một thư mục video"}
             </div>
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 <Form.Item
@@ -84,7 +84,7 @@ const FormVideoFolder = (props) => {
                     <Input />
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit">Submit</Button>
+                    <Button htmlType="submit">Lưu</Button>
                 </Form.Item>
             </Form>
             {contextHolder}

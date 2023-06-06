@@ -10566,7 +10566,7 @@ survey-core@1.9.90:
   resolved "https://registry.yarnpkg.com/survey-core/-/survey-core-1.9.90.tgz#af26a3af5e753818f2127977aa297fab5cca2120"
   integrity sha512-hwke6n4kUtDEChJM+xPO9Okd3ND1ExjQXuuqZOFhv28x3qRpzTb8DZydlfcei0Yt5o3I3DHxI4p+UHFvjKNBhA==
 
-survey-creator-core@1.9.90:
+survey-creator-core@1.9.90, survey-creator-core@^1.9.90:
   version "1.9.90"
   resolved "https://registry.yarnpkg.com/survey-creator-core/-/survey-creator-core-1.9.90.tgz#c39131ed66c221cbbc3346298cd1fc3296f3adcd"
   integrity sha512-vyg85cBpatWrByATkOjqfI4Ki9p81DqUvdokj7KsDK4TEnJpEXlVn2yVIP55ywD2ol2YtYrmfLWT+yMKar2aJw==

@@ -179,7 +179,7 @@ const ListDocsFolders = (props) => {
                                                 onEditFolder(item);
                                             }}
                                         >
-                                            Edit
+                                            Sửa
                                         </Button>
                                         <Button
                                             className="my-1 w-full"
@@ -188,7 +188,7 @@ const ListDocsFolders = (props) => {
                                                 onDeleteFolder(item);
                                             }}
                                         >
-                                            Delete
+                                            Xóa
                                         </Button>
                                     </div>
                                 }

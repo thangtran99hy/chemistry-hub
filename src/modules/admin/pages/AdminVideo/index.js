@@ -24,7 +24,7 @@ const AdminVideo = (props) => {
         <div className="flex items-start h-full">
             <div className="w-[180px] pr-2 border-r border-r-gray-200 h-full">
                 <div className="flex items-center justify-between py-1">
-                    <div>Folders</div>
+                    <div>Thư mục</div>
                     <Button
                         icon={<HiFolderAdd />}
                         onClick={() => setModalType(MODAL_ADD_FOLDER)}

@@ -108,7 +108,7 @@ const Formulas = (props) => {
         <div className="p-2 flex-1 w-full flex flex-col h-full overflow-hidden">
             <div className="p-2 pt-0">
                 <Input.Search
-                    placeholder="Enter your search query"
+                    placeholder="Nhập tìm kiếm của bạn"
                     onChange={(event) => setSearchInput(event.target.value)}
                     enterButton
                     value={searchInput}

@@ -37,7 +37,7 @@ const FormTest = (props) => {
         const dataSurvey = creator.getSurveyJSON();
         if (!dataSurvey.title) {
             api.warning({
-                message: `Bạn phải nhập tiêu đề!`,
+                message: `Có lỗi xảy ra!`,
                 placement: "topRight",
             });
             return;
@@ -54,7 +54,7 @@ const FormTest = (props) => {
                 })
                 .catch((err) => {
                     api.warning({
-                        message: `Gặp lỗi khi thêm folder!`,
+                        message: `Có lỗi xảy ra!`,
                         placement: "topRight",
                     });
                 });
@@ -73,7 +73,7 @@ const FormTest = (props) => {
             })
             .catch((err) => {
                 api.warning({
-                    message: `Gặp lỗi khi tải file lên!`,
+                    message: `Có lỗi xảy ra!`,
                     placement: "topRight",
                 });
             });
@@ -86,10 +86,10 @@ const FormTest = (props) => {
             </div>
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 <Form.Item name="isHide" valuePropName="checked">
-                    <Checkbox>Hide</Checkbox>
+                    <Checkbox>Ẩn</Checkbox>
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit">Submit</Button>
+                    <Button htmlType="submit">Lưu</Button>
                 </Form.Item>
             </Form>
             {contextHolder}

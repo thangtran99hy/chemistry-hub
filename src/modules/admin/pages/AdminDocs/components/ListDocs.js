@@ -11,7 +11,6 @@ import {
     startAfter,
     deleteDoc,
 } from "firebase/firestore";
-import { MdSimCardDownload } from "react-icons/md";
 import { FaEllipsisV } from "react-icons/fa";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import TypeDocIcon from "./../../../../../assets/file_docs.svg";
@@ -224,7 +223,7 @@ const ListDocs = (props) => {
                                                     onEditDoc(item);
                                                 }}
                                             >
-                                                Edit
+                                                Sửa
                                             </Button>
                                             <Button
                                                 className="my-1 w-full"
@@ -232,7 +231,7 @@ const ListDocs = (props) => {
                                                     onDeleteDoc(item);
                                                 }}
                                             >
-                                                Delete
+                                                Xóa
                                             </Button>
                                         </>
                                     )}
@@ -240,7 +239,7 @@ const ListDocs = (props) => {
                                         className="my-1 w-full"
                                         onClick={() => onDownloadDoc(item)}
                                     >
-                                        Download
+                                        Tải xuống
                                     </Button>
                                 </div>
                             }

@@ -110,7 +110,7 @@ const Sidebar = (props) => {
                     }}
                 >
                     <FaSignOutAlt />
-                    <div className="ml-2">Sign Out</div>
+                    <div className="ml-2">Đăng xuất</div>
                 </div>
             ) : (
                 <div
@@ -120,7 +120,7 @@ const Sidebar = (props) => {
                     }}
                 >
                     <FaSignInAlt />
-                    <div className="ml-2">Sign In</div>
+                    <div className="ml-2">Đăng nhập</div>
                 </div>
             )}
         </div>

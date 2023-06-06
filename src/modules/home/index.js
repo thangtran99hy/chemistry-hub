@@ -15,7 +15,7 @@ const Home = (props) => {
                         setIsAuthModal(true);
                     }}
                 >
-                    Sign In
+                    Đăng nhập
                 </Button>
             )}
         </div>

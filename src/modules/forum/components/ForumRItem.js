@@ -44,7 +44,7 @@ const ForumRItem = (props) => {
             {(answer.hasReply || hasReply) && <div className="cursor-pointer text-gray-400 text-xs hover:text-gray-700" onClick={() => {
                 setShowReply(prev => !prev)
             }}>
-                {showReply ? 'hide replies' : 'show replies'}
+                {showReply ? 'ẩn câu trả lời' : 'hiển thị câu trả lời'}
             </div>}
             <div className={`pl-3  ml-1 ${(showReply || isReply) ? 'listR border-l' : ''} py-2`} >
                 {

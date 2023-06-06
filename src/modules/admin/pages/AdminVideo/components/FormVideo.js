@@ -61,7 +61,7 @@ const FormVideo = (props) => {
     const onFinish = async (values) => {
         if (!youtubeId) {
             api.warning({
-                message: `Link youtube không thỏa mãn!`,
+                message: `Có lỗi xảy ra!`,
                 placement: "topRight",
             });
             return;
@@ -83,7 +83,7 @@ const FormVideo = (props) => {
                     })
                     .catch((err) => {
                         api.warning({
-                            message: `Gặp lỗi khi thêm folder!`,
+                            message: `Có lỗi xảy ra!`,
                             placement: "topRight",
                         });
                     });
@@ -107,23 +107,25 @@ const FormVideo = (props) => {
                 })
                 .catch((err) => {
                     api.warning({
-                        message: `Gặp lỗi khi tải file lên!`,
+                        message: `Có lỗi xảy ra!`,
                         placement: "topRight",
                     });
                 });
         } catch (e) {
             api.warning({
-                message: `Gặp lỗi khi tải file lên!`,
+                message: `Có lỗi xảy ra!`,
                 placement: "topRight",
             });
         }
     };
     return (
         <div>
-            <div className="text-2xl font-bold mb-1">Thêm mới một tài liệu</div>
+            <div className="text-2xl font-bold mb-1"> {data
+                ? "Sửa một video"
+                : "Thêm mới một video"}</div>
             <Form form={form} layout="vertical" onFinish={onFinish}>
                 {folders && (
-                    <Form.Item label="Select Option" name="folder">
+                    <Form.Item label="Chọn thư mục" name="folder">
                         <Select>
                             <Option value={null}>Main</Option>
                             {folders.map((item) => {
@@ -136,11 +138,11 @@ const FormVideo = (props) => {
                 )}
                 <Form.Item
                     name="linkYoutube"
-                    label="Link youtube"
+                    label="Liên kết youtube"
                     rules={[
                         {
                             required: true,
-                            message: "Please enter a link youtube",
+                            message: "Vui lòng nhập một liên kết youtube",
                         },
                     ]}
                 >
@@ -169,25 +171,25 @@ const FormVideo = (props) => {
                 </div>
                 <Form.Item
                     name="title"
-                    label="Title"
+                    label="Tiêu đề"
                     rules={[
                         {
                             required: true,
-                            message: "Please enter a title",
+                            message: "vui lòng nhập tiêu đề",
                         },
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="description" label="Description">
+                <Form.Item name="description" label="Mô tả">
                     <Input.TextArea />
                 </Form.Item>
                 <Form.Item name="isHide" valuePropName="checked">
-                    <Checkbox>Hide</Checkbox>
+                    <Checkbox>Ẩn</Checkbox>
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit">Submit</Button>
+                    <Button htmlType="submit">Lưu</Button>
                 </Form.Item>
             </Form>
             {contextHolder}
