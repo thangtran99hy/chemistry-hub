@@ -163,7 +163,7 @@ const ListTest = (props) => {
                         ref={
                             index === items.length - 1 ? lastItemRef : undefined
                         }
-                        className={`my-2 p-2 border rounded-xl relative overflow-hidden ${(isDisplay && takeUsers.includes(dataUser.uid)) ? 'bg-green-400' : 'hover:bg-gray-50'}`}
+                        className={`h-full my-2 p-2 border rounded-xl relative overflow-hidden ${(isDisplay && takeUsers.includes(dataUser?.uid)) ? 'bg-green-400' : 'hover:bg-gray-50'}`}
                         onClick={() => onClickItem(item)}
                     >
                         <div className="flex">

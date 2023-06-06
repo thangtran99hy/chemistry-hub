@@ -165,7 +165,7 @@ const TakeTestList = (props) => {
                                     ref={
                                         index === items.length - 1 ? lastItemRef : undefined
                                     }
-                                    className="my-2 p-2 border rounded-xl hover:bg-gray-50 relative overflow-hidden"
+                                    className="h-full my-2 p-2 border rounded-xl hover:bg-gray-50 relative overflow-hidden"
                                     onClick={() => onClickItem(item)}
                                 >
                                     <div className="flex flex-col mt-2">

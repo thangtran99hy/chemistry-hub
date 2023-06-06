@@ -157,7 +157,7 @@ const ListVideo = (props) => {
                                         ? lastItemRef
                                         : undefined
                                 }
-                                className="my-2 pb-2 border rounded-xl hover:bg-gray-50 relative overflow-hidden"
+                                className="h-full my-2 pb-2 border rounded-xl hover:bg-gray-50 relative overflow-hidden"
                             >
                                 <div>
                                     <img
