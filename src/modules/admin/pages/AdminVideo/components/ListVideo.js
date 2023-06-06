@@ -84,7 +84,6 @@ const ListVideo = (props) => {
             loading: true,
         }));
         const db = getFirestore();
-        console.log(folderActive);
         const q = lastDoc
             ? isDisplay ? query(
                   collection(db, "video"),
@@ -151,7 +150,7 @@ const ListVideo = (props) => {
             <Row>
                 {items.map((item, index) => {
                     return (
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} className="p-2">
+                        <Col xs={24} sm={24} md={24} lg={12} xl={8} className="p-2">
                             <div
                                 ref={
                                     index === items.length - 1

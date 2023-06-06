@@ -64,9 +64,15 @@ const Sidebar = (props) => {
         links.PATH_ADMIN_VIDEO,
     ];
 
-    const match = useMatch(links.PATH_ADMIN_TAKE_TEST);
-    const isAdminTakeList = match?.pathname === location.pathname;
-    // console.log(match)
+    const matchAdminTakeTest = useMatch(links.PATH_ADMIN_TAKE_TEST);
+    const isAdminTakeList = matchAdminTakeTest?.pathname === location.pathname;
+
+    const matchTakeTest = useMatch(links.PATH_TAKE_TEST);
+    const isTakeTest = matchTakeTest?.pathname === location.pathname;
+
+    const matchForumQuestion = useMatch(links.PATH_FORUM_QUESTION);
+    const isForumQuestion = matchForumQuestion?.pathname === location.pathname;
+
     return (
         <div className="w-[200px] bg-[#2c3145] flex flex-col">
             <div className="p-2">
@@ -79,7 +85,7 @@ const Sidebar = (props) => {
                     const isActive =
                         location.pathname === menuItem.path ||
                         (menuItem.path === links.PATH_ADMIN &&
-                            (listPathAdmin.includes(location.pathname)|| isAdminTakeList));
+                            (listPathAdmin.includes(location.pathname)|| isAdminTakeList)) || (menuItem.path === links.PATH_TEST && isTakeTest) || (menuItem.path === links.PATH_FORUM && isForumQuestion);
                     return (
                         <NavLink to={menuItem.path}>
                             <div

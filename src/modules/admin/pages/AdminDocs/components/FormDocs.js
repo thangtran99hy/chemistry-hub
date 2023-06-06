@@ -9,9 +9,9 @@ import {
     Checkbox,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
-import { getFileExtension } from "../../../../../utils/functions";
+import {getFileExtension, handleDownload} from "../../../../../utils/functions";
 import {
     getFirestore,
     collection,
@@ -155,7 +155,6 @@ const FormDocs = (props) => {
     const uploadFile = (file) => {
         return new Promise((resolve, reject) => {
             if (file) {
-                console.log("file", file);
                 const docId = uuidv4();
                 const storage = getStorage();
                 const docPath = `${DRIVE_DIR}/${docId}.${getFileExtension(
@@ -165,7 +164,6 @@ const FormDocs = (props) => {
 
                 uploadBytes(storageRef, file.originFileObj)
                     .then((snapshot) => {
-                        console.log("Uploaded a blob or file!");
                         resolve({
                             status: "success",
                             docId: docId,
@@ -184,6 +182,17 @@ const FormDocs = (props) => {
             }
         });
     };
+    const onDownloadDoc = () => {
+        const storage = getStorage();
+        getDownloadURL(ref(storage, data.docPath))
+            .then((url) => {
+                handleDownload(
+                    url,
+                    `${data.title}.${getFileExtension(data.docPath)}`
+                );
+            })
+            .catch((error) => {});
+    }
     return (
         <div>
             <div className="text-2xl font-bold mb-1">Thêm mới một tài liệu</div>
@@ -214,6 +223,12 @@ const FormDocs = (props) => {
                               ]
                     }
                 >
+                    {data &&  <Button
+                        className="my-1"
+                        onClick={() => onDownloadDoc()}
+                    >
+                        Download
+                    </Button>}
                     <Upload.Dragger
                         maxCount={1}
                         accept=".pdf,.doc,.docx,.ppt,.xls,.xlsx"
@@ -226,6 +241,8 @@ const FormDocs = (props) => {
                         </p>
                     </Upload.Dragger>
                 </Form.Item>
+
+
 
                 <Form.Item
                     name="title"

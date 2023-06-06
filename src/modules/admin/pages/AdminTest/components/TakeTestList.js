@@ -151,8 +151,6 @@ const TakeTestList = (props) => {
         setShowTakeTest(item)
     }
 
-    console.log('test',test)
-
     return (
         <div className="flex h-full">
             <div className="p-2 flex-1 overflow-y-auto">

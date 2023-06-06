@@ -6,14 +6,21 @@ export const getFileExtension = (filename) => {
     return "";
 };
 
-export const handleDownload = (url, fileName) => {
-    console.log("fileName", fileName);
-    const link = document.createElement("a");
-    link.href = url;
+export const handleDownload = async (url, fileName) => {
+    const response = await fetch(url);
+    const data = await response.blob();
+
+    const blob = new Blob([data]);
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
     link.download = fileName;
+
     document.body.appendChild(link);
     link.click();
+
     document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
 };
 
 export const extractVideoId = (url) => {

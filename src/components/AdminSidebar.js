@@ -1,6 +1,6 @@
 import React from "react";
 import * as links from "./../routes/links";
-import { GrUserAdmin } from "react-icons/gr";
+
 import { SiReadthedocs } from "react-icons/si";
 import { MdOutlineForum } from "react-icons/md";
 import { AiOutlineVideoCamera, AiOutlineFileSearch } from "react-icons/ai";
@@ -29,7 +29,6 @@ const AdminSidebar = (props) => {
 
     const match = useMatch(links.PATH_ADMIN_TAKE_TEST);
     const isAdminTakeList = match?.pathname === location.pathname;
-    console.log(isAdminTakeList)
     return (
         <div className="flex items-center border-b border-b-gray-200 p-2">
             <NavLink to={links.PATH_ADMIN} className="py-1 px-5 font-bold">

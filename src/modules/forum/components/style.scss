@@ -19,9 +19,8 @@
 .forumAdd::after {
   position: absolute;
   content: '';
-  left: -14px;
-  width: 14px;
-
+  left: -25px;
+  width: 25px;
   height: 1px;
   background: #ccc;
   top: 10px;
@@ -54,6 +53,17 @@
           padding: 5px 20px;
         }
       }
+    }
+  }
+}
+
+.answerBoxContent {
+  .replyIcon {
+    display: none;
+  }
+  &:hover {
+    .replyIcon {
+      display: block;
     }
   }
 }

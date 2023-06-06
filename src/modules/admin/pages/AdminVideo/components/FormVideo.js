@@ -146,7 +146,6 @@ const FormVideo = (props) => {
                 >
                     <Input
                         onChange={(e) => {
-                            console.log(e.target.value);
                             setYouTubeId(extractVideoId(e.target.value));
                         }}
                     />

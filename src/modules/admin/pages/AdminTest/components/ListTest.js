@@ -152,7 +152,6 @@ const ListTest = (props) => {
         navigate(links.PATH_ADMIN_TAKE_TEST.replace(':id', item.id))
     }
 
-    console.log('items',items)
     return (
         <div className="p-2 flex-1 w-full overflow-y-auto">
             <Row>

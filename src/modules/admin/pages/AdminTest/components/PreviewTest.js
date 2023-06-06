@@ -6,9 +6,6 @@ const PreviewTest = (props) => {
         testPreview,
         data
     } = props;
-    const onComplete = (survey) => {
-        console.log(survey.data); // You can perform any further actions with the survey data here
-    };
     const surveyModel = new Survey.Model(testPreview.data);
     if (data) {
         surveyModel.data = data ?? {};

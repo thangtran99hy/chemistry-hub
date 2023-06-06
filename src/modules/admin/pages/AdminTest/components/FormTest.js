@@ -26,7 +26,6 @@ const FormTest = (props) => {
     const { authUser, dataUser } = useContext(AuthContext);
     useEffect(() => {
         if (data?.data) {
-            console.log('data?.data',data?.data)
             const surveyModel = new Survey.Model(data.data);
             creator.setSurvey(surveyModel)
         }

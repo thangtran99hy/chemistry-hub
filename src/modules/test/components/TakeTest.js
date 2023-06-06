@@ -1,10 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import {doc, getDoc, getFirestore, serverTimestamp, setDoc, updateDoc} from "firebase/firestore";
 import * as Survey from 'survey-react';
 import 'survey-react/survey.css';
 import {AuthContext} from "../../../providers/AuthProvider";
 import {Button, notification} from "antd";
+// BiArrowBack
+import { BiArrowBack } from "react-icons/bi";
+import * as links from "./../../../routes/links"
 const TakeTest = (props) => {
     const {id} = useParams();
     const [test, setTest] = useState(null);
@@ -74,7 +77,7 @@ const TakeTest = (props) => {
             data: survey.data,
         })
             .then((res) => {
-
+                getInit();
             })
             .catch((err) => {
                 api.warning({
@@ -85,16 +88,13 @@ const TakeTest = (props) => {
         const docRef = doc(db, "test", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-
             const takeUsers = Array.isArray(docSnap.data().takeUsers) ? docSnap.data().takeUsers : []
-
             await updateDoc(docRef, {
                 takeUsers: [
                     ...takeUsers,
                     authUser.uid
                 ]
             });
-
         }
 
     }
@@ -104,29 +104,31 @@ const TakeTest = (props) => {
     surveyModel.mode = 'display';
 
     return (
-        <div>
+        <div className="flex flex-col h-full">
             <div>
+                <NavLink to={links.PATH_TEST}>
+                    <Button icon={<BiArrowBack />}>
+                        Back
+                    </Button>
+                </NavLink>
             </div>
-            {
-                test.takeUsers.includes(dataUser.uid) ? <div>
-                    <div>
-                        <div>
-                            Bạn đã làm bài Test
-                        </div>
-                        <Button onClick={() => setViewTake(true)}>
-                            Hiện
-                        </Button>
-                        {(viewTake && takeTest) && <div>
-                            <Survey.Survey model={surveyModel}/>
-                        </div>}
-                    </div>
-                </div>
-                    :
-                    <div>
+            <div className="flex-1 overflow-y-auto">
+                {
+                    test.takeUsers.includes(dataUser.uid) ? <>
+                            <div className="text-center p-2 text-green-500">
+                                Bạn đã làm bài Test
+                            </div>
+                            <Button onClick={() => setViewTake(prev => !prev)}>
+                                {viewTake ? 'Ẩn bài làm' : 'Hiện bài làm'}
+                            </Button>
+                            {(viewTake && takeTest) && <div>
+                                <Survey.Survey model={surveyModel}/>
+                            </div>}
+                        </>
+                        :
                         <Survey.Survey json={test.data} onComplete={onComplete} />
-                    </div>
-            }
-
+                }
+            </div>
             {contextHolder}
         </div>
     )
