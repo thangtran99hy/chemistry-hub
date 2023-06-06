@@ -16,6 +16,7 @@ const ForumRItem = (props) => {
     const [isReply, setIsReply] = useState(false);
     const [showReply, setShowReply] = useState(false);
     const [forceUpdate, setForceUpdate] = useState(false);
+    const [hasReply, setHasReply] = useState(false)
     useEffect(() => {
         if (forceUpdate) {
             setForceUpdate(false)
@@ -40,14 +41,14 @@ const ForumRItem = (props) => {
                     }}  shape="circle" icon={<BsFillReplyFill />} />
                 </div>
             </div>
-            <div className="cursor-pointer text-gray-400 text-xs hover:text-gray-700" onClick={() => {
+            {(answer.hasReply || hasReply) && <div className="cursor-pointer text-gray-400 text-xs hover:text-gray-700" onClick={() => {
                 setShowReply(prev => !prev)
             }}>
                 {showReply ? 'hide replies' : 'show replies'}
-            </div>
-            <div className="pl-3 border-l ml-1 listR mb-3" >
+            </div>}
+            <div className={`pl-3  ml-1 ${(showReply || isReply) ? 'listR border-l' : ''} py-2`} >
                 {
-                    showReply &&
+                    (showReply && (answer.hasReply || hasReply)) &&
                     <ForumRList
                         questionId={questionId}
                         answer={answer}
@@ -64,6 +65,7 @@ const ForumRItem = (props) => {
                             setIsReply(prev => !prev)
                         }}
                         onSuccess={() => {
+                            setHasReply(true)
                             if (showReply) {
                                 setForceUpdate(true)
                             } else {
